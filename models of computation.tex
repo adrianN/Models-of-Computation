@@ -1,0 +1,125 @@
+\pdfcompresslevel9
+\pdfdecimaldigits2
+\pdfminorversion4
+
+\documentclass[12pt,a4paper]{book}
+\usepackage[bottom=2.5cm,top=3.5cm]{geometry}
+%\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{ae}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage[margin=10pt,font=small,labelfont=bf]{caption}
+\usepackage{listings}
+\usepackage{microtype}
+
+%\linespread{1.25}
+\setlength{\parindent}{0pt}
+
+\usepackage{fancyhdr}
+\usepackage[
+  	pdfstartview=FitH,   
+  	pdffitwindow=true,
+	pdftitle = "Models of Computation WiSe1011 UdS", % Sets the document information Title field
+    pdfauthor = "Adrian Neumann", %Sets the document information Author field
+  	colorlinks,
+  	linkcolor=black,
+  	anchorcolor=black,
+  	citecolor=black,
+  	urlcolor=black
+]{hyperref}
+
+\pagestyle{fancy}
+\cfoot{\thepage}
+
+\newsavebox{\footerlicence}
+\sbox{\footerlicence}{\includegraphics{./images/by-nc-sa}}
+
+\rfoot{\usebox{\footerlicence}}
+\fancyhead{}
+\lfoot{Found a mistake? Write an e-mail!}
+
+\definecolor{gruen}{rgb}{0.5,1,0.5}
+\definecolor{rot}{rgb}{1,0.5,0.5}
+
+
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\B}[0]{\mathbb{B}}
+\newcommand{\N}[0]{\mathbb{N}}
+\newcommand{\Z}[0]{\mathbb{Z}}
+\newcommand{\Q}[0]{\mathbb{Q}}
+\newcommand{\R}[0]{\mathbb{R}}
+\newcommand{\C}[0]{\mathbb{C}}
+\newcommand{\E}[0]{\mathbb{E}}
+\newcommand{\im}[0]{\mathit{i}}
+\newcommand{\kthings}[2]{{#1}_1,\ldots,{#1}_{#2}}
+\newcommand{\nthings}[1]{\kthings{#1}{n}}
+\newcommand{\norm}[1]{|\!|#1|\!|}
+\newcommand{\rank}{\mbox{rank }}
+\newcommand{\skal}[1]{\left\langle {#1} \right\langle}
+\newcommand{\ok}{{\large \checkmark}}
+\newcommand{\no}{{\large $\mathbb{\times}$}}
+\newcommand{\nz}{\text{nz}}
+\renewcommand{\bar}{\overline}
+\renewcommand{\arraystretch}{1.5}
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{argmin}}}
+
+
+
+\newcommand{\trans}[1]{{#1}^\text{\upshape \sffamily T}}
+\newtheoremstyle{leplain} %name
+    {2em} %above
+    {2em} %below
+    {} %body font
+    {} %indent
+    {\bfseries} %head font
+    {:} %punctuation after head
+    {0.5em} %space after head
+    {} %head spec
+\title{Models of Computation}
+\author{Adrian Neumann \\ {\small \texttt{adrian\_neumann@gmx.de}}}
+
+
+\date{}
+
+\begin{document}
+\frontmatter
+\lstdefinelanguage{pseudocode}{
+    morekeywords = {repeat, until, if, unless, while, for, return, break},
+    sensitive = false,
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+}
+\lstset{language=pseudocode, basicstyle=\sffamily\small\slshape, commentstyle=\slshape\sffamily, keywordstyle=\upshape\bfseries, breaklines=true, mathescape=true, tabsize=2}
+
+
+\theoremstyle{definition}
+\newtheorem{Def}{Definition}[section]
+
+\theoremstyle{leplain}
+\newtheorem{Ex}{Example}[section]
+\newtheorem{pr}{Proof}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{lem}{Lemma}[section]
+
+\theoremstyle{theorem}
+\newtheorem{thm}{Theorem}[section]
+
+
+
+\maketitle
+\thispagestyle{fancy}
+
+\input{./disclaimer}
+
+\mainmatter
+
+
+\end{document}

@@ -55,6 +55,7 @@ This algorithm can produce error if two adjacent vertices choose the colour at t
 \begin{figure}
 \includegraphics[width=0.5\linewidth]{./images/graph1}
 \includegraphics[width=0.5\linewidth]{./images/graph11}
+\caption{If the nodes labelled with x have high IDs and choose simultaniously they produce an invalid colouring.}
 %n1 2
 %n2 x
 %n3 3
@@ -72,14 +73,14 @@ This algorithm can produce error if two adjacent vertices choose the colour at t
 
 It depends on the model how we can deal with this. Either we have the means for synchronisation, or we don't.
 
-\begin{Def}[Synchronous Distributed Algorithm] A entity in a SDA can execute (in any order) the following things
+\begin{Def}[Synchronous Distributed Algorithm] During one unit of time an entity in a SDA can execute (in any order) the following things
 \begin{itemize}
 \item Perform local computations
 \item Send messages
 \item Receive messages
 \end{itemize}
 
-Each of these computations has to be of reasonable cost s.t. we can assume it takes "one unit of time". 
+As long as they are of "reasonable" complexity
 \end{Def}
 
 In this model we can change the algorithm like this:

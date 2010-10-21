@@ -99,5 +99,7 @@ Reduce
 \begin{thm} Reduce is correct, i.e. it produces a valid colouring after at most $n$ rounds. The number of colours used is upper bounded by $\Delta(G)+1$. 
 \end{thm}
 
-\begin{pr}
+\begin{pr} In every round there is a vertex that has the highest ID and thus gets coloured. Hence at most $n$ rounds are used. Since we use First-Free to assign the colours, the number of colours is $\leq \Delta+1$.
+
+This algorithm always produces a correct colouring, since no two vertices that are connected by an edge choose their colour simultaniously. One of them will always have a higher ID and prevent the other from choosing.
 \end{pr}

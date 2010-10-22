@@ -1,4 +1,5 @@
-= Lecture notes for Models of Computation =
+Lecture notes for Models of Computation 
+====
 
 As last Semester in [Optimization](http://github.com/adrianN/Optimisation-SS10-UdS) I will publish my lecture notes here. 
 

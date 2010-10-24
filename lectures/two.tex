@@ -4,7 +4,7 @@ In order to finde a faster algorithm we first look at a special case, trees. A t
 
 \begin{thm} $T$ is a tree implies $\chi(T)=2$ \end{thm}
 
-\begin{pr} Let $v$ be a distinguished vertex, the root, in the tree. Colour $v$ red.  Colour every other vertex according to the distance from the root. If the distance is odd colour it blue, else red. Since there are no cycles in the graph, the coloring is valid.
+\begin{pr} Let $v$ be a distinguished vertex, the root, in the tree. Colour $v$ red.  Colour every other vertex according to the distance from the root. If the distance is odd colour it blue, else red. Since there are no cycles in the graph, the coloring is valid (i.e. it can't happen that a node is on two paths to the root, one of even and one of odd length).
 \end{pr}
 
 If we assume that the root knows that it's special we can construct the algorithm in figure \ref{alg:slow_tree_colour}
@@ -29,7 +29,7 @@ This algorithm isn't faster than the previous one, for degenerate trees. We also
 
 Note that this algorithm doesn't need to operate in a synchronous environment. Every node waits for an event before it starts its computation. Event-driven algorithms can be implemented in asynchronous settings
 
-\begin{Def}[Asynchronous DA] A asynchronous distributed algorithm has no access to a global clock and works event-driven.
+\begin{Def}[Asynchronous DA] An asynchronous distributed algorithm has no access to a global clock and works event-driven.
 
 Any sent message will arrive in finite time.
 \end{Def}
@@ -41,23 +41,24 @@ There are different ways to assess the complexity of asynchronous algorithms (th
 \item Time Complexity: Under the assumption that each message has delay 1, the time complexity is the length of the longest chain of interdependent messages.
 \end{itemize}
 
-\begin{thm} The asynchronous time complexity of algorithm \ref{alg:slow_tree_colour} is $\leq height(T)$ \end{thm}
+\begin{thm} The asynchronous time complexity of algorithm \ref{alg:slow_tree_colour} is $\leq \text{height}(T)$ \end{thm}
 \begin{pr} In the first round the root sends its colour to all neighbours. This costs one time unit. Argument follows from induction on the height\end{pr}
 
-We now try to improve the algorithm to get a better runtime than $O(n)$. In fact we'll give an algorithm that is bounded by $O(\log^*n)$. We assume that all vertices know that the graph is a tree, a root is known and each node knows it's parent. How we find that information is again deferred to later
+We now try to improve the algorithm to get a better runtime than $O(n)$. In fact we'll give an algorithm that is bounded by $O(\log^*n)$\footnote{$\log^* n = \min \{i|\log^{(i)} n \leq 2\}$}. We assume that all vertices know that the graph is a tree, a root is known and each node knows it's parent. How we find that information is again deferred to later
 
 \begin{figure}[hbt]
 \begin{lstlisting}
 Let $c_v$ be ID(v)
 repeat 
-	send $c_v$ to all childrens
+	send $c_v$ to all children
 	if $v$ is the root then
 		I=0
 	else 
 		let $c_p$ be the parent's colour
 		I = smallest i s.t. bin$_i$($c_v$), bin$_i$($c_p$) differ
+		
 	$c_v$ = <bin(I),bin$_I$($c_v$)> //use $1+\log |c_v|$ bits  
-	                                //even if I small
+											  //even if I small
 until |bin($c_v$)| does not change
 \end{lstlisting}
 \caption{6-colour}
@@ -68,10 +69,10 @@ until |bin($c_v$)| does not change
 
 \begin{pr} Since all IDs are different the colouring is valid in the first step. Now consider some iteration during the execution of the algorithm
 
-Let $u$ be the parent of $w$. If $u$ finds $I_u$ and $w$ finds $I_w$ then the new colours are $c_u=<bin(I_u), bin_{I_u}(c_u)>, c_w<bin(I_w),b_{I_w}(c_w)>$. There are two cases
+Let $u$ be the parent of $w$. If $u$ finds $I_u$ and $w$ finds $I_w$ then the new colours are $c_u=<bin(I_u), bin_{I_u}(c_u)>, c_w=<bin(I_w),b_{I_w}(c_w)>$. There are two cases
 
 \begin{itemize}
-\item $I_u\neq I_w$. Then the first part of the new colours differ. \ok
+\item $I_u\neq I_w$. Then the first part of the new colours differs. \ok
 \item $I_u=I_w=I$. Then we have $b_I(c_u)\neq b_I(c_w)$, by the choice of $I$ \ok
 \end{itemize}
 
@@ -92,11 +93,11 @@ We have that $K_{i+1} < K_i$ as long as $K_i\geq 4$. If $K_i\in \{1,2,3\}$, we h
 
 \[K_{i+1} = 1+\left\lceil \log(2^x\cdot y)\right\rceil = \begin{cases} 1+x & y=1\\ 2+x &y>1\end{cases}\]
 
-So we have 
+It follows that
 
 \[K_{i+1}<K_i \Leftrightarrow 2^x\cdot y > \begin{cases} 1+x & y=1\\ 2+x &y>1\end{cases}\]
 
-check yourself that the exponential function on the left grows sufficiently fast for the claim to be true.
+Check yourself that the exponential function on the left grows sufficiently fast for the claim to be true.
 \end{pr}
 
 \begin{thm} The final colouring uses at most 6 colours and stops after $O(\log^* n)$ rounds.\end{thm}
@@ -109,13 +110,13 @@ $i=1$ \ok. $i\rightarrow i+1$:
 
 \begin{align*}
 K_{i+1}&= 1+\rup{\log K_i}\\
-	&\leq 1+ \rup{\log(2+\rup{\log^{(i)}K_0})}\\
+	&\leq 1+ \rup{\log\left(2+\rup{\log^{(i)}K_0}\right)}\\
 	&\leq 1+\rup{1+\log \rup{\log^{(i)} K_0}}\\
 	&\leq 2+\rup{1+\log \rup{\log^{(i)} K_0}}\\
 	&=\leq 2+\rup{1+\log \log^{(i)} K_0}\\
 \end{align*}
 
-If we choose $i=\log^*(K_0)$ we get $K_i\leq 4$ by definition of $\log^*$. Henc in round $\log^*(K_0)+2$ the algorithm will finish.
+If we choose $i=\log^*(K_0)$ we get $K_i\leq 4$ by definition of $\log^*$. Hence in round $\log^*(K_0)+2$ the algorithm will finish.
 \end{pr}
 
 Six colours isn't very satisfying for a bipartite graph, so we try to reduce the number of colours further.
@@ -137,7 +138,7 @@ Algorithm \ref{alg:Shift-Down} only takes one round.
 
 \begin{figure}[hbt]
 \begin{lstlisting}
-For $x\in \{3,4,5\}$
+for $x\in \{3,4,5\}$
 	Shift-Down
 	All vertices coloured with $x$ call First-Free
 \end{lstlisting}
@@ -150,5 +151,3 @@ For $x\in \{3,4,5\}$
 \begin{pr} After the shift down, the neighbourhood of a vertex labelled with $x$ contains only two colours. The colour of the parent and the colours of the children. It can also not happen that two adjacent vertices call First-Free simultaniously, since then they would have had the same colour to begin with.\end{pr}
 
 Finding a colouring with just 2 colours is not possible as fast.
-
-\subsection{Lower Bounds}

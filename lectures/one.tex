@@ -2,7 +2,9 @@
 
 \section{Introduction}
 
-Many autonomous entities with their own hardware (memory, CPU) in a system that connects them through a network over which they can send messages to each other. The natural way to represent that is a graph. There are many models to describe different aspects of the system. They have to deal with the following issues:
+A distributed system is composed of many autonomous interconnected entities with their own hardware (memory, CPU). The entities can send messages to each other via the network.
+
+The natural way to represent a DS is a graph. There are many models to describe different aspects of the system. They have to deal with the following issues:
 
 \begin{enumerate}
 \item Communication. Usually communication is very expensive, its cost dominates all other costs. Hence it is typically assumed that communication is the only cost that occurs.
@@ -23,7 +25,7 @@ We will assume that initially all nodes are equipped with a unique ID$\in [1,n]$
 \begin{Def}[Chromatic Number] The chromatic number $\chi(X)$ of a graph is the minimal number of colours needed in any valid colouring of G.
 \end{Def}
 
-Computing the chromatic number is NP-complete. Hence we want to try to find some approximate solution.
+Computing the chromatic number is NP-complete\footnote{It's actually one of \href{http://www.cs.berkeley.edu/~luca/cs172/karp.pdf}{Karp's original 21 complete problems}}. Hence we want to try to find some approximate solution.
 
 A simple, sequential algorithm assigns colours greedily:
 
@@ -40,10 +42,10 @@ while $\exists$ uncoloured vertex v
 
 Correctness is given by an inductive argument. During the execution the coloured subgraph is always valid, since we assign colours that don't occur in the neighbourhood.
 
-Finally $\Delta(G)+1$ is an upper bound for the number of colours since there is always a free colour in the set $[1,\Delta(G)+1]$ 
+Finally $\Delta(G)+1$ is an upper bound for the number of colours since there is always a free colour in the set $[1,\Delta(G)+1]$.
 \end{pr}
 
-We want to construct a distributed algorithm that uses the same ideas to reduce the number of colours.
+We want to construct a distributed algorithm that uses the same ideas to reduce the number of colours. In a distributed setting, each node runs the following code independently:
 
 \begin{lstlisting}
 First-Free(coloured G, vertex v)
@@ -89,7 +91,7 @@ In this model we can change the algorithm like this:
 Reduce
 	send own ID to all neighbours
 	receive IDs from all neighbours
-	while $\exists$ uncolored vertex in the neighbourhood that has larger ID
+	while $\exists$ uncolored adjacent vertex that has larger ID
 		send "undecided" to all neighbours
 		receive messages from neighbours
 	colour thyself with First-Free

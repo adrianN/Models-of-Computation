@@ -7,7 +7,7 @@ We're now going to prove that \ref{alg:6-colour} is optimal. Recall that we have
 \item We have an initial colouring
 \end{itemize}
 
-\begin{thm}\label{thm:ring_color_lowerbound} Any deterministic algorithm colouring any\footnote{the only thing that differs between the rings is the initial colouring. We basically claim there exists an initial colouring that produces that runtime.} ring with n nodes with at most three colours needs $\Omega(\log^* n)$ rounds.
+\begin{thm}\label{thm:ring_colour_lowerbound} Any deterministic algorithm colouring any\footnote{the only thing that differs between the rings is the initial colouring. We basically claim there exists an initial colouring that produces that runtime.} ring with n nodes with at most three colours needs $\Omega(\log^* n)$ rounds.
 \end{thm}
 
 Consider a node $v$. After $t$ rounds it can discover information, i.e. the topology and the IDs, about a $t$-neighbourhood around it.
@@ -127,6 +127,7 @@ Suppose $b_i(v)=1$, then $b_i(v')=0$ otherwise we wouldn't have a valid edge col
 \includegraphics{./images/g_3_counterex}
 \end{center}
 \caption{The corresponding edge in the line graph $1,2,3,4 \rightarrow 2,3,4,1$ doesn't exist in $G_{4,n}$}
+\label{fig:g_3_counterex}
 \end{figure}
 
 %1,2,3 -- 2,3,4 -- 3,4,1

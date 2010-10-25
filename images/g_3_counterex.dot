@@ -1,0 +1,8 @@
+graph G {
+	rankdir = LR
+	a [label ="1,2,3"]
+	b [label ="2,3,4"]
+	c [label ="3,4,1"]
+
+	a -- b -- c
+}

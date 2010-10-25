@@ -1,0 +1,9 @@
+digraph G {
+	node [shape = point]
+	a -> b
+	a -> c
+	a -> d
+	e -> a
+	f -> a
+	g -> a
+}

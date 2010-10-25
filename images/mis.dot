@@ -1,0 +1,16 @@
+graph G {
+	node [shape = point]
+	v [color = red]
+	a [color = blue]
+	b [color = blue]
+	c [color = blue]
+	d [color = blue]
+	e [color = blue]
+	f [color = blue]
+	a -- v
+	b -- v
+	c -- v
+	d -- v
+	e -- v
+	f -- v
+}

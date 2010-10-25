@@ -1,0 +1,40 @@
+graph G {
+	a [label=1]
+	b [label=2]
+	c [label=3]
+	d [label=4]
+	e [label=5]
+	f [label=1]
+	g [label=6]
+	h [label=7]
+	
+
+
+
+	a -- b
+	a -- c 
+	a -- d
+	a -- e 
+	
+	b -- c
+	b -- d
+	b -- g
+	
+	c -- d
+	c -- e
+	
+	d -- e
+	d -- g
+	
+	e -- f
+	e -- g
+	
+	f -- g
+	
+	f -- h
+	b -- h
+	c -- h
+	e -- h
+	g -- h
+}
+	

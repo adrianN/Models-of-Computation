@@ -1,0 +1,13 @@
+digraph G {
+  rankdir = LR
+	node [shape = point]
+	v2 [shape = ellipse, label ="v'"]
+	v [shape = ellipse]
+	a -> v2
+	b -> v2
+	c -> v2
+	v2 -> v
+	v -> a2
+	v -> b2
+	v -> c2
+}

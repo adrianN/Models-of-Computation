@@ -1,0 +1,24 @@
+digraph G {
+subgraph g1 {
+	a -> b [label = "1"]
+	b -> c [label = "2"]
+	c -> d [label = "3"]
+	d -> a [label = "4"]
+	a -> c [label = "5"]
+}
+
+subgraph g2 {
+	n1 -> n2
+	n2 -> n3
+	n3 -> n4
+	n4 -> n1
+	n4 -> n5
+	n5 -> n3
+	
+	n1 [label = "1"]
+	n2 [label = "2"]
+	n3 [label = "3"]
+	n4 [label = "4"]
+	n5 [label = "5"]
+}
+}

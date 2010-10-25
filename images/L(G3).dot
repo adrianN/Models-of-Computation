@@ -1,0 +1,6 @@
+digraph G {
+	rankdir = LR
+	node1234 [label ="1,2,3,4"]
+	node2345 [label ="2,3,4,5"]
+	node1234 -> node2345
+}

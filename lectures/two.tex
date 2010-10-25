@@ -1,6 +1,6 @@
 \subsection{Colouring Trees}
 
-In order to finde a faster algorithm we first look at a special case, trees. A tree is an acyclic connected graph. All trees are bipartite, and hence have chromatic number 2.
+In order to find a faster algorithm we first look at a special case, trees. A tree is an acyclic connected graph. All trees are bipartite, and hence have chromatic number 2.
 
 \begin{thm} $T$ is a tree implies $\chi(T)=2$ \end{thm}
 
@@ -83,13 +83,13 @@ So the colouring stays valid after each round.
 
 \begin{align*}
 K_0 &= \left\lceil \log n\right\rceil\\
-K_{i+1} &= 1+\left\lceil K_i\right\rceil
+K_{i+1} &= 1+\left\lceil\log K_i\right\rceil
 \end{align*}
 
 \end{lem}
 
 \begin{pr}
-We have that $K_{i+1} < K_i$ as long as $K_i\geq 4$. If $K_i\in \{1,2,3\}$, we have $K_{i+1}=K_i$. Otherwise we can write $K_i=2^x\cdot y$, $x\in \N$, $y\in [1,2)$. Then we have
+We have that $K_{i+1} < K_i$ as long as $K_i\geq 4$. If $K_i\in \{1,2,3\}$, we have $K_{i+1}=K_i$ (by direct calculation \ok). Otherwise we can write $K_i=2^x\cdot y$, $x\in \N$, $y\in [1,2)$. Then we have
 
 \[K_{i+1} = 1+\left\lceil \log(2^x\cdot y)\right\rceil = \begin{cases} 1+x & y=1\\ 2+x &y>1\end{cases}\]
 
@@ -112,8 +112,8 @@ $i=1$ \ok. $i\rightarrow i+1$:
 K_{i+1}&= 1+\rup{\log K_i}\\
 	&\leq 1+ \rup{\log\left(2+\rup{\log^{(i)}K_0}\right)}\\
 	&\leq 1+\rup{1+\log \rup{\log^{(i)} K_0}}\\
-	&\leq 2+\rup{1+\log \rup{\log^{(i)} K_0}}\\
-	&=\leq 2+\rup{1+\log \log^{(i)} K_0}\\
+	&\leq 2+\rup{\log \rup{\log^{(i)} K_0}}\\
+	&\leq 2+\rup{\log \log^{(i)} K_0}\\
 \end{align*}
 
 If we choose $i=\log^*(K_0)$ we get $K_i\leq 4$ by definition of $\log^*$. Hence in round $\log^*(K_0)+2$ the algorithm will finish.
@@ -132,7 +132,7 @@ all others: take the old colour of parent
 
 Algorithm \ref{alg:Shift-Down} only takes one round.
 
-\begin{lem} The colouring produced by algorithm \ref{alg:Shift-Down} is valid, if the intitial colouring is valid. Also, all siblings of a node have the same colour.\end{lem}
+\begin{lem} The colouring produced by algorithm \ref{alg:Shift-Down} is valid, if the initial colouring is valid. Also, all siblings of a node have the same colour.\end{lem}
 
 \begin{pr} Let $c'_u$ be the initial colours and $c_u$ be the new ones. Let $u_1\rightarrow u_2 \rightarrow u_3$ be a path in the tree. Then $c_{u_2}=c'_{u_1} \neq c_{u_3}=c'_{u_2}$. The root is also ok, since it chooses a fresh colour.\end{pr}
 

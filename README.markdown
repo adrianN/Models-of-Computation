@@ -12,4 +12,4 @@ The usual caveats apply:
 Contribute
 ----
 
-If you want to contribute, send me your github account ID so that I can add you. You can of course also send me patches or images or just an email with a correction.
+If you want to contribute, send me your github account ID so that I can add you. You can of course also send me patches or images or just an email with a correction. I **especially appreciate images**

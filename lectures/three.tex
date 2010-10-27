@@ -3,20 +3,22 @@
 We're now going to prove that \ref{alg:6-colour} is optimal. Recall that we have the following assumptions:
 
 \begin{itemize}
-\item We're working in a synchornous model
+\item We're working in a synchronous model
 \item We have an initial colouring
 \end{itemize}
 
 \begin{thm}\label{thm:ring_colour_lowerbound} Any deterministic algorithm colouring any\footnote{the only thing that differs between the rings is the initial colouring. We basically claim there exists an initial colouring that produces that runtime.} ring with n nodes with at most three colours needs $\Omega(\log^* n)$ rounds.
 \end{thm}
 
-Consider a node $v$. After $t$ rounds it can discover information, i.e. the topology and the IDs, about a $t$-neighbourhood around it.
+Consider a node $v$. After $t$ rounds it can discover information, i.e. the topology and the IDs, about a $t$-neighbourhood around it. To prove the lower bound we will construct a graph with these neighbourhoods and show that any colouring of the ring is also a colouring of that graph. We then derive a contradiction by showing that the chromatic number of the neighbourhood-graph is larger than 3, if $t$ is too small.
 
 Assume the vertices can distinguish between clockwise and counterclockwise neighbours, s.t. we can impose some ordering on them (this can only speed up the algorithm, so the assumption is ok for proving lower bounds).
 
-Define
+Define $W_{s,n}$ as the set of all $s$-tuples of nodes:
 
 \[W_{s,n} = \{(x_1,x_2,\ldots,x_s) | 1 \leq x_i\leq n, x_i\neq x_j\}\]
+
+Note that not all of these are valid neighbourhoods for a fixed ring, but for each tuple there is a ring for which it is a valid neighbourhood.
 
 Essentially after $t$ rounds, each vertex sees an element from $W_{2t+1,n}$. So any distributed algorithm colouring any right with $\leq 3$ colours calculates a function
 
@@ -47,32 +49,57 @@ Consider the ring
 
 %picture ring with vertices x_1... x_t+1 x_t+2 ... x_2t+1,x_2t+2
 
-Since the algorithm produces a valid colouring it colours $x_{t+1}$ and $x_{t+2}$ with different colours. But then the function must be $A(v)\neq A(v')$.
+Since the algorithm produces a valid colouring it colours $x_{t+1}$ and $x_{t+2}$ with different colours, hence it assign different colours to the overlapping neighbourhoods $v$ and $v'$ which is a contradiction to the assumption.
 \end{pr}
 
-It follows that $\chi(G_{2t+1,n})\leq 3$. We now show that the chromatic number is actually larger, if $t$ is too small.
+It follows that $\chi(G_{2t+1,n})\leq 3$ if $A$ exists. We now show that the chromatic number is actually larger, if $t$ is too small. To show a lower bound for the chromatic number of $G_{2t+1,n}$ we will take a subgraph that can be nicely characterised recursively and show a lower bound for it. For this need line graphs:
 
-\begin{Def} For a graph $\vec G$, the line graph $L(\vec D)$ is  the graph with the same vertex set as $\vec D$ and $(e,e')$ is an edge if e ends where e' starts. 
+\begin{Def} For a graph $G$, the \href{http://en.wikipedia.org/wiki/Line_graph}{line graph} $L(G)$ is the graph that characterises the adjacency between edges in $G$. Each vertex of $L(G)$ is an edge in $G$ and there are edges between vertices in $L(G)$ if the corresponding edges in $G$ are adjacent.
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{./images/linegraph_ex}
 \end{center}
-\caption{A graph and its linegraph}
+\caption{A directed graph and its linegraph. It's worthwhile to mentally replace the edge numbers by tuples.}
 \end{figure}
 \end{Def}
 
-\begin{lem} $\chi(G_{2t+1,n}) \geq \log^{(2t)} n$\end{lem}
+\begin{lem} \label{lem:chi_line_graphs} $\chi(L(\vec D)) \geq \log \chi(\vec D)$ \end{lem}
 
-\begin{pr} Define a new, directed graph $\vec G_{s,n} = (\vec W_{s,n}, \vec E_{s,n})$ that is build from a subset of the originial graph
+\begin{pr} Let $k=\chi(L(\vec D))$ and $\phi$ be a k-colouring. $\phi$ is a colouring of the edges of $\vec D$, since it is a colouring of the line graph.
+
+\begin{center}
+\includegraphics{./images/edge_coloring_line_graph}
+\end{center}
+
+For all incoming edges to a, all outgoing edges have a different colour in $\phi$, otherwise it wouldn't be a valid colouring for the line graph.
+
+We construct a colouring $\hat \phi$ of $\vec D$ that uses at most exponentially more colours. 
+
+\[\hat \phi(v) = (b_1,\ldots,b,_k)\qquad b_i= \begin{cases} 1 & \exists \text{incoming edge with colour } i\\0 & \text{otherwise}\end{cases}\]
+
+$\hat \phi$ is a valid colouring.
+
+\begin{center}
+\includegraphics{./images/coloring_from_edges}
+\end{center}
+
+Suppose $b_i(v)=1$, then $b_i(v')=0$ otherwise we wouldn't have a valid edge colouring. Since we have $k$ bits available, we can use at most $2^k$ colours in $\hat \phi$.
+\end{pr}
+
+Now we can prove a lower bound for the chromatic number of $G_{2t+1,n}$.
+
+\begin{lem} \label{lem:vec_g_colours} $\chi(G_{2t+1,n}) \geq \log^{(2t)} n$\end{lem}
+
+\begin{pr} Define a new, directed graph $\vec G_{s,n} = (\vec W_{s,n}, \vec E_{s,n})$ that is build from a subset of the originial graph. We only take ordered tuples and ordered edges:
 
 \[\vec W_{s,n} = \{(x_1,x_2,\ldots,x_s) | 1\leq x_1\leq \ldots \leq x_s \leq n\}\]
 \[\vec E_{s,n} = \{(\underbrace{(x_1,\ldots,x_s)}_{v},\underbrace{(x_2,\ldots,x_{s+1})}_{v'})| v,v'\in \vec W_{s,n} \wedge x_{s+1} > x_s\}\]
 
-Since both the edge and the nodeset of $\vec G$ is a subset of $G$, we immediately have $\chi(\vec G)\leq \chi(G)$. By introducing the new graph we gained the ability to recursively characterize $\vec G_{s,n}$.
+Since both the edge- and the nodeset of $\vec G$ is a subset of $G$, we immediately have $\chi(\vec G)\leq \chi(G)$. By the new graph we can be recursively characterized:
 
 \begin{enumerate}
-\item $\vec G_{1,n}$ is the complete graph ($i\rightarrow i'$, if $i'>i$). This follows from the definition.
+\item $\vec G_{1,n}$ is the complete graph ($i\rightarrow i'$, if $i'>i$). This follows from the definition. Note $\chi(\vec G_{1,n})=n$.
 \item $\vec G_{s+1,n} = L(\vec G_{s,n})$
 
 Take $s=3$ as example, see figure \ref{fig:g3_l3}.
@@ -85,37 +112,15 @@ Take $s=3$ as example, see figure \ref{fig:g3_l3}.
 \label{fig:g3_l3}
 \end{figure}
 
-We can identify the edges with elements from $\vec G_4$. And if we don't include an edge in the line graph, we also don't see it in $G_4$.
+We can identify the edges with elements from $\vec G_4$. And if we don't include an edge in the line graph, we also don't see it in $\vec G_4$.
 
-This also works in the general case: Every time we see an edge in $G_{s,n}$ we map the edge to the union of its endpoints, i.e. a node in $G_{s+1,n}$. If two edges are adjacent s.t. they are a new edge in the line graph, then the union is such that the edge is also in $G_{s+1,n}$
+This also works in the general case: Every time we see an edge in $\vec G_{s,n}$ we map the edge to the union of its endpoints, i.e. a node in $\vec G_{s+1,n}$. If two edges are adjacent s.t. they are a new edge in the line graph, then the union is such that the edge is also in $\vec G_{s+1,n}$
+
+Now we get from lemma \ref{lem:chi_line_graphs} that $\chi(\vec G_{s+1,n}) \geq \log \chi(\vec G_{s,n})$ and thus $\chi(\vec G_{2t+1,n}) \geq \log^{(2t)} \chi(\vec G_{1,n}) = \log^{(2t)} n$. And since $\vec G$ is a subgraph of $G$, this lower bound also holds for $G$. 
 \end{enumerate}
 \end{pr}
 
-\begin{lem} $\chi(L(\vec D)) \geq \log \chi(\vec D)$ \end{lem}
-
-\begin{pr} Let $k=\chi(L(\vec D))$ and $\phi$ be a k-colouring. $\phi$ is a colouring of the edges of $\vec D$, since it is a colouring of the line graph.
-
-\begin{center}
-\includegraphics{./images/edge_coloring_line_graph}
-\end{center}
-
-For all incoming edges to a, all outgoing edges have a different colour in $\phi$, otherwise it wouldn't be a valid colouring for the line graph.
-
-We construct a colouring $\hat \phi$ of $\vec D$ that uses at most exponentially more colours. 
-
-\[\hat \phi(v) = (b_1,\ldots,x_k)\qquad b_i= \begin{cases} 1 & \exists \text{incoming edge with colour } i\\0 & \text{otherwise}\end{cases}\]
-
-$\hat \phi$ is a valid colouring.
-
-\begin{center}
-\includegraphics{./images/coloring_from_edges}
-\end{center}
-
-Suppose $b_i(v)=1$, then $b_i(v')=0$ otherwise we wouldn't have a valid edge colouring. Since we have $k$ bits available, we can use at most $2^k$ colours in $\hat \phi$.
-
-\end{pr}
-
-\begin{pr}[Theorem \ref{thm:ring_colour_lowerbound}] We need $t=\Omega(\log^* n)$ s.t. $\log^{(2t)} n$ is $\leq 3$.\end{pr}
+\begin{pr}[Theorem \ref{thm:ring_colour_lowerbound}] Directly from lemma \ref{lem:vec_g_colours}: we need $t=\Omega(\log^* n)$ s.t. $\log^{(2t)} n$ is $\leq 3$.\end{pr}
 
 \paragraph{Remark.}
 
@@ -154,7 +159,7 @@ Suppose $b_i(v)=1$, then $b_i(v')=0$ otherwise we wouldn't have a valid edge col
 $U$ is \emph{maximal}, if no vertex can be added s.t. this property is preserved. Note the difference to a \emph{maximum} independent set: $U$ is \emph{maximum} if its cardinality is maximal among all independent sets.
 \end{Def}
 
-Note that the maximum set anddn a maximal set can be very different 
+Note that a maximum set and a maximal set can be very different, see figure \ref{fig:maximum_vs_maximal_is} 
 
 %picture 
 \begin{figure}[hbt]
@@ -162,12 +167,12 @@ Note that the maximum set anddn a maximal set can be very different
 \includegraphics{./images/mis}
 \end{center}
 \caption{Red node is a maximal independent set, blue are a maximum independent set}
+\label{fig:maximum_vs_maximal_is}
 \end{figure}
 
+Finding a maximum independent set is NP-complete, it is even inapproximable by a factor of $\approx \sqrt{n}$ unless P=NP. However, maximal independent sets can be computed greedily. We want to find a distributed algorithm for this problem.
 
-Finding a maximum independent set is NP-complete, it is even inapproximable by a factor of $\approx \sqrt{n}$ unless P=NP. However maximal independent sets can be computed greedily. We want  to find a distributed algorithm for this problem.
-
-There is a relation between colouring and MIS. Each color class in a coloured graph is an independent set, since there musn't be edges between nodes of the same colour. However it may not be maximal, but we can construct one in a distributed fashion by parallely adding vertices of other colours greedily.
+There is a relation between colouring and MIS. Each colour class in a coloured graph is an independent set, since there musn't be edges between nodes of the same colour. It may not be maximal, but we can construct one in a distributed fashion by parallely adding vertices of other colours greedily.
 
 \begin{thm} Given a synchronous distributed algorithm that colours a graph in $R$ rounds with $C$ colours, then we can find a MIS in time $O(R+C)$\qed\end{thm}
 

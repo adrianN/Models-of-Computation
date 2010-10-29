@@ -1,0 +1,14 @@
+graph G {
+	rankdir=LR
+	node [shape = point]
+  {a,y,c} -- v
+	v -- v2
+	v2 -- {x,x2,e}
+	x -- {f,g,h}
+	x2 -- {i,j,k}
+	
+	v [shape = ellipse]
+	v2 [shape = ellipse]
+	x [shape = ellipse]
+	x2 [shape = ellipse]
+}

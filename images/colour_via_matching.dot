@@ -1,5 +1,5 @@
 graph G {
-
+	node [label ="", shape = point, width = 0.3, height = 0.3]
 	subgraph cluster2 {
 		label = "A"
 		a -- b
@@ -25,8 +25,5 @@ graph G {
 		h -- i
 	}
 	
-	a -- f
-	b -- g
-	c -- h
-	d -- i
+
 }

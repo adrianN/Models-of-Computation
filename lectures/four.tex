@@ -4,8 +4,6 @@ Let $G_i=(V_i,E_i)$ be the graph at the beginning of the $i$th round. Obviously 
 
 \begin{lem} \label{lem:at_least_half}$\E(X_i |G_i = G) \geq |E(G)|/2$ \end{lem}
 
-%todo elaborate: not independent
-
 \begin{pr} Define an event
 \[E_{v\rightarrow v'} \forall w\in adj(v): c_v<c_w \wedge \forall w\in adj(v') \backslash {v} : c_v < c_w\]
 to be the event that the edge ${v,v'}$ is removed because $v$ entered the maximal independent set and $v$ had the smallest random value of all neighbours of $v'$.
@@ -98,45 +96,48 @@ We already know how to colour graphs of bounded degree in $O(\log^* n)$. We can 
 \begin{enumerate}
 \item For every $v\in V$ make $d(v)+1$ clones $C_v = \{v_0,v_1,\ldots v_{d(v)}\}$. $V^*$ is the set of all clones.
 \item $C_v$ forms a clique in $G^*$
-\item If $\{u,v\} \in E$ then $\{u_i,v_i\} \in E^*$ for $0\leq i \leq \min \{d(u),d(v)\}$
+\item If $\{u,v\} \in E$ then $\{u_i,v_i\} \in E^*$ for $0\leq i \leq \min \{d(u),d(v)\}$, i.e. connect the cliques as in figure \ref{fig:colour_via_matching}
 
 \begin{figure}
 \begin{center}
-\begin{verbatim}
-graph G {
-
-	subgraph cluster2 {
-		label = "A"
-		a -- b
-		a -- c
-		a -- d
-		a -- e
-		b -- c
-		b -- d
-		b -- e
-		c -- d
-		c -- e
-		d -- e
-		
-	}
-	
-	subgraph cluster1 {
-	  label = "B"
-		f -- g
-		f -- h
-		f -- i
-		g -- h
-		g -- i
-		h -- i
-	}
-	
-	a -- f
-	b -- g
-	c -- h
-	d -- i
-}
-\end{verbatim}
+\includegraphics[scale=0.7]{./images/colour_via_matching}
+%\begin{verbatim}
+%graph G {
+%
+%	subgraph cluster2 {
+%		label = "A"
+%		a -- b
+%		a -- c
+%		a -- d
+%		a -- e
+%		b -- c
+%		b -- d
+%		b -- e
+%		c -- d
+%		c -- e
+%		d -- e
+%		
+%	}
+%	
+%	subgraph cluster1 {
+%	  label = "B"
+%		f -- g
+%		f -- h
+%		f -- i
+%		g -- h
+%		g -- i
+%		h -- i
+%	}
+%	
+%	a -- f
+%	b -- g
+%	c -- h
+%	d -- i
+%}
+%\end{verbatim}
 \end{center}
+\caption{Connecting the cliques}
+\label{fig:colour_via_matching}
 \end{figure}
 \end{enumerate}
 

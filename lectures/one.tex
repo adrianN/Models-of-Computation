@@ -20,9 +20,9 @@ Given an undirected graph $G=(V,E)$ we want to find a colouring, i.e. an assignm
 
 This is useful for symmetry breaking. For example cellphones that communicate with the same cell have to choose different frequencies.
 
-We will assume that initially all nodes are equipped with a unique ID$\in [1,n]$. Typically each ID uses $O(\log n)$ bits. Obviously the IDs are a valid colouring. We want to try to use fewer colours, if possible the minimal number.
+We will assume that initially all nodes are equipped with a unique ID from $[1,n]$. Typically each ID uses $O(\log n)$ bits. Obviously the IDs are a valid colouring. We want to try to use fewer colours, if possible the minimal number.
 
-\begin{Def}[Chromatic Number] The chromatic number $\chi(X)$ of a graph is the minimal number of colours needed in any valid colouring of G.
+\begin{Def}[Chromatic Number] The chromatic number $\chi(G)$ of a graph is the minimal number of colours needed in any valid colouring of G.
 \end{Def}
 
 Computing the chromatic number is NP-complete\footnote{It's actually one of \href{http://www.cs.berkeley.edu/~luca/cs172/karp.pdf}{Karp's original 21 complete problems}}. Hence we want to try to find some approximate solution.
@@ -40,7 +40,7 @@ while $\exists$ uncoloured vertex v
 
 \begin{pr} It is clear that the algorithm stops in $n$ steps, since in each iteration the number of vertices decreases by one. 
 
-Correctness is given by an inductive argument. During the execution the coloured subgraph is always valid, since we assign colours that don't occur in the neighbourhood.
+Correctness is given by an inductive argument. During the execution the coloured subgraph has a valid colouring, since we assign colours that don't occur in the neighbourhood.
 
 Finally $\Delta(G)+1$ is an upper bound for the number of colours since there is always a free colour in the set $[1,\Delta(G)+1]$.
 \end{pr}
@@ -48,16 +48,16 @@ Finally $\Delta(G)+1$ is an upper bound for the number of colours since there is
 We want to construct a distributed algorithm that uses the same ideas to reduce the number of colours. In a distributed setting, each node runs the following code independently:
 
 \begin{lstlisting}
-First-Free(coloured G, vertex v)
+First-Free(coloured neighbourhood, vertex v)
 	give v the smallest available colour
 \end{lstlisting}
 
-This algorithm can produce error if two adjacent vertices choose the colour at the same time under certain circumstances.
+This algorithm can fail if two adjacent vertices choose the colour at the same time under certain circumstances, as depicted in figure \ref{fig:first-free-error}.
 
 \begin{figure}
 \includegraphics[width=0.5\linewidth]{./images/graph1}
 \includegraphics[width=0.5\linewidth]{./images/graph11}
-\caption{If the nodes labelled with x have high IDs and choose simultaniously they produce an invalid colouring.}
+\caption{If the nodes labelled with x have high IDs and choose simultaneously they produce an invalid colouring.}
 %n1 2
 %n2 x
 %n3 3
@@ -70,7 +70,8 @@ This algorithm can produce error if two adjacent vertices choose the colour at t
 %n4 -- n5
 %n4 -- n6
 %
-%n1 and n2 choose colours simultaniously, both get 1.
+%n1 and n2 choose colours simultaneously, both get 1.
+\label{fig:first-free-error}
 \end{figure}
 
 It depends on the model how we can deal with this. Either we have the means for synchronisation, or we don't.
@@ -82,17 +83,17 @@ It depends on the model how we can deal with this. Either we have the means for 
 \item Receive messages
 \end{itemize}
 
-As long as they are of "reasonable" complexity
+As long as each is of "reasonable" complexity.
 \end{Def}
 
-In this model we can change the algorithm like this:
+We can express the algorithm as a SDA like this:
 
 \begin{lstlisting}
 Reduce
 	send own ID to all neighbours
 	receive IDs from all neighbours
-	while $\exists$ uncolored adjacent vertex that has larger ID
-		send "undecided" to all neighbours
+	while $\exists$ uncoloured neighbour with larger ID
+		send "uncoloured" to all neighbours
 		receive messages from neighbours
 	colour thyself with First-Free
 	send the colour to neighbours
@@ -103,5 +104,5 @@ Reduce
 
 \begin{pr} In every round there is a vertex that has the highest ID and thus gets coloured. Hence at most $n$ rounds are used. Since we use First-Free to assign the colours, the number of colours is $\leq \Delta+1$.
 
-This algorithm always produces a correct colouring, since no two vertices that are connected by an edge choose their colour simultaniously. One of them will always have a higher ID and prevent the other from choosing.
+This algorithm always produces a correct colouring, since no two vertices that are connected by an edge choose their colour simultaneously. One of them will always have a higher ID and prevent the other one from choosing.
 \end{pr}

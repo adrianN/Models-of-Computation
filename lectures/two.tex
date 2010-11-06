@@ -38,7 +38,7 @@ There are different ways to assess the complexity of asynchronous algorithms (th
 
 \begin{itemize}
 \item Message Complexity: The number of messages sent
-\item Time Complexity: Under the assumption that each message has delay 1, the time complexity is the length of the longest chain of message dependencies.
+\item Time Complexity: Under the assumption that each message has delay 1, the time complexity is the length of the longest chain of message dependencies. Alternatively: the time needed if every message arrives after \emph{at most} one unit of time.
 \end{itemize}
 
 \begin{thm} The asynchronous time complexity of algorithm \ref{alg:slow_tree_colour} is $\leq \text{height}(T)$ \end{thm}

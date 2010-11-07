@@ -1,0 +1,28 @@
+graph G {
+	node [shape = point, width = 0.2]
+	a -- b
+	a-- c
+	a -- d
+	a -- e
+	a -- f
+	b -- a
+	b -- c
+	b -- d
+	b -- e
+	b -- f
+	c -- a
+	c -- b
+	c -- d
+	c -- e
+	c -- f
+	e -- a
+	e -- b
+	e -- c
+	e -- d
+	e -- f
+	f -- a
+	f -- b
+	f -- c
+	f -- d
+	f -- e
+}

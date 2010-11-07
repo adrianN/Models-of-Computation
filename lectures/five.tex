@@ -5,7 +5,7 @@ A spanning tree $T$ of a graph $G$ is a subgraph of $G$ that is a tree and conta
 
 \begin{figure}[hbt]
 \begin{center}
-\includegraphics{./images/not_all_trees_equal}
+\includegraphics[scale=1.5]{./images/not_all_trees_equal}
 \end{center}
 \caption{The green tree is more desirable since the diameter is smaller}
 \label{fig:not_all_trees_equal}
@@ -21,17 +21,18 @@ The gap between the diameter of $G$ and a spanning tree $T$ can be on the order 
 
 \begin{figure}
 \begin{center}
+\includegraphics{./images/diameter_ratio_spanning_tree}
 \end{center}
 \caption{An example for a bad spanning tree}
 \label{fig:diameter_ratio_spanning_tree}
 \end{figure}
 
 \begin{lem} The diameter of a BFS tree $T$ is at most twice the diameter of $G$\end{lem}
-\begin{pr} In any tree we have
+\begin{pr} In any tree $T$ the following holds for the distances:
 
 \[d_T(u,v) \leq d_T(u,r) + d_T(r,v)\]
 
-Since the BFS tree is a tree of shortest paths we have $d_T(u,r), d_T(r,v) = d_G(u,r), d_G(r,v)$. Since both distances are smaller than the diameter, the bound follows\end{pr} 
+Since the BFS tree is a tree of shortest paths from the root, we have $d_T(u,r), d_T(r,v) = d_G(u,r), d_G(r,v)$. Since both distances are smaller than the diameter, the bound follows\end{pr} 
 
 \subsection{Broadcasting and Spanning Trees}
 
@@ -55,9 +56,9 @@ forward the message to all other neighbours
 The communication complexity is also correct, since each node sends $\deg(v)$ many messages. By the handshaking lemma this is $2E$ in total.
 \end{pr}
 
-We can extend algorithm \ref{alg:flood} to build a spanning tree by having each vertex set its parent as the node from which it gets the message first. In a synchronous setting it might happen that more than one neighbour send the message simultaniously; these ties are broken arbitrarily. In any case the decision is transmitted to the parent.
+We can extend algorithm \ref{alg:flood} to build a spanning tree by having each vertex set its parent as the node from which it receives the message first. In a synchronous setting it might happen that more than one neighbour sends the message simultaniously; these ties are broken arbitrarily. In any case the decision is transmitted to the parent.
 
-Once the tree is constructed the message complexity for any furhter broadcasts is reduced to $O(n)$, as messages are only relayed along the tree edges. This is obviously optimal.
+Once the tree is constructed the message complexity for any further broadcasts is reduced to $O(n)$, as messages are only relayed along the tree edges. This is obviously optimal.
 
 But is $T$ a BFS-tree? This depends on the model of computation. In a synchronous setting, where all messages travel at the same speed, we do indeed get a BFS-tree. Not so in an asynchronous setting.
 

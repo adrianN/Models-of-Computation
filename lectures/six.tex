@@ -1,0 +1,85 @@
+\section{Minimum Spanning Trees -- The GHS Algorithm}
+\subsection{Overview}
+
+We want to find a minimum spanning tree\footnote{The sum of the edge weights in T is minimal over all spanning trees} in a weighted graph in an asynchronous setting. 
+
+\begin{Def}[Fragment] A fragment of a tree T is a connected subgraph of T. \end{Def}
+
+The algorithm will work similarly to Kruskal's algorithm in that we start with single vertices and build lightest fragments, merging them eventually to obtain a spanning tree. The correctness of this idea relies of the following lemma:
+
+\begin{lem} Let $F$ be a fragment of an MST and let $e$ be an outgoing edge\footnote{an edge that connects a node of $F$ with a node $v\in V\backslash F$} of minimum weight. Then $F\cup \{e\}$ is also a fragment of an MST (possibly a different one).\end{lem}
+
+\begin{pr} Let $T$ be an MST containing $F$ and suppose $e$ is not in $T$. Add $e$ to $T$; it must close a cycle. The cycle has some other edge $e'$ that is also an outgoing edge of $F$. Since $e$ has minimal weight over all outgoing edges, removing $e'$ and adding $e$ to $T$ can only yield a tree of smaller or equal weight.\end{pr}
+
+To make things easier we will assume that all weights are distinct.
+
+\begin{lem} If all edge weights are distinct, the MST is unique \end{lem}
+\begin{pr} Suppose for the sake of contradiction that $T,T'$ are different MSTs. Let $e$ be the lightest edge of $T$ or $T'$ that is not contained in both trees. W.l.o.g $e\in T$. 
+
+Let $H$ be $T'\cup \{e\}$. Again the additional edge closes a cycle in $T'$. There must be some edge $e'$ on the cycle that isn't in $T$. Since $e$ was the lightest such edge and all weights are different, $w(e')\gneq w(e)$. Hence removing $e'$ would make $T'$ lighter.\end{pr}
+
+In an asynchronous setting we can't simply sort the edges by weight and add them one after the other unless they close cycles. Instead we will proceed as follows:
+
+Fragments will find their minimal outgoing edge. We also assign levels to fragments (initially 0). Let $L,L'$ be the levels of neighbouring $F$ and $F'$. Two fragments merge if 
+
+\begin{enumerate}
+\item $L<L'$ with new level $L'$
+\item $L=L'$ and the minimum outgoing edge of $F$ and $F'$ coincide (the new level is $L+1$)
+\end{enumerate}
+
+otherwise $F$ waits. The termination is guaranteed as after a while only one fragment is left. Until that happens there is always one globally lightest edge between two fragments that will get the fragments to merge.
+
+\subsection{The Algorithm}
+
+Of course coordinating the fragments is quite complicated. The vertices are in one of three states
+
+\begin{description}
+\item[Sleeping] The initial state
+\item[Find] this vertex is currently participating in finding the minimum weight outgoing edge
+\item[Found] all other times
+\end{description}
+
+%Sleeping -> Found [label = "Connect(0)"]
+%Found -> clusterFind [label = "Init(L,ID)"]
+%subgraph clusterFind {
+%	one [label = "Find min outg. edge"]
+%	one -> two
+%	two [
+%}
+
+The edges also have states
+
+\begin{description}
+\item[Basic] the default state
+\item[Branch] this edge is in the MST
+\item[Rejected] the edge that is not in the MST (it connects two nodes in a fragment, but it's not a Branch)
+\end{description}
+
+When a vertex is awakened it chooses the minimum-weight incident edge and sends a {\scshape Connect(0)} and switches to state Found. 
+
+Suppose that a fragment of level $L$ has just been formed out of two level $L-1$ fragments via the outgoing edge $e$. $e$ is now the \emph{root} of the new fragment and $w(e)$ is the ID of the new fragment. $u,v$ must now broadcast this information to the other nodes by sending {\scshape Init(L,ID)}. All receiving vertices go to the state Find and start searching for an outgoing edge of minimal weight.
+
+If a fragment with higher ID is created it may be that other fragments are waiting to connect. The {\scshape Init} message is also forwarded to neighbours with outstanding {\scshape Connect} requests. They then join the new fragment.
+
+In the Find state vertices find their lightest outgoing edge and cooperate with the other vertices to find the globally lightest. During the first stage {\scshape Test(ID)} messages are sent over Basic edges. If the receiver has the same ID, the edge is Rejected (these edges close cycles). Otherwise the receiving node checks whether its level is greater or equal that of the sender, in which case the edge is Accepted. If however the level is smaller, it waits until the above conditions become true.
+
+Afterwards, in the second state all leaves {\scshape Report} their state to their neigbours. All internal nodes wait until they have gathered the information from the children and then report themselves. When the report arrives at $u$ and $v$ they can decide which is the smallest outgoing edge in the whole fragment and broadcast ({\scshape Trace\_Back}) that information to the other nodes. After the broadcast completes the vertices switch to Found.
+
+It is also possible that $v$ sends {\scshape Connect} to a vertex $w$ in a fragment with higher ID. Since the fragments will merge immediately an {\scshape Init(L,ID)} message is send back to $v$. There are two cases: Either $w$ has already reported the minimum weight outgoing edge to the parent or it hasn't. In the latter case the fragment of $v$ participates in finding the minimum weight outgoing edge. If $w$ however has already sent {\scshape Report}, it means that some other edge $e'$ besides $(v,w)$ is the minimum weight outgoing edge of $w$ (otherwise a {\scshape Test} would have been sent to $v$). But in this case the outgoing edges of $v$'s fragment all must have greater weight than those of $w$'s fragment.
+
+\begin{lem} A fragment at level $l$ contains $\geq 2^l$ vertices.\end{lem}
+\begin{pr} The level only increases if two same size fragments are merged, the rest follows by induction.\end{pr}
+
+So the highest level is at most logarithmic in the number of vertices.
+
+\begin{lem} The message complexity of the algorithm is O($|E|+|V|\log |V|$)\end{lem}
+\begin{pr} We count the different messages separately:
+\begin{itemize}
+\item {\scshape Test} At most one in each direction on each edge.
+\item {\scshape Accept/Reject} Same as {\scshape Test}
+\item {\scshape Init} once per level all nodes get informet, $\leq |V|\log |V|$
+\item {\scshape Connect} at most two per edge
+\item {\scshape Report} same as {\scshape Init}
+\item {\scshape Trace\_Back} same as {\scshape Init}
+\end{itemize}
+\end{pr}

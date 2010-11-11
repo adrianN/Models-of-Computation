@@ -64,6 +64,6 @@ But is $T$ a BFS-tree? This depends on the model of computation. In a synchronou
 
 \subsection{BFS-trees in Asynchronous Settings}
 
-There are several approaches to the problem. One solution works in phases: in phase $p$ all nodes at distance $p$ are included in the tree (exactly as in the synchronous setting). The phases are synchronised by the root.At the end of the phase all nodes send a message to the root and the root sends the "ok" back to start a new phase. The overhead for the synchronisation is $2p$ after phase $p$. Since $p\leq D$ (actually $\leq R$) we get a time complexity of $O(D^2)$ in total. The message complexity is O($m+nD$).
+There are several approaches to the problem. One solution works in phases: in phase $p$ all nodes at distance $p$ are included in the tree (exactly as in the synchronous setting). The phases are synchronised by the root. At the end of the phase all nodes send a message to the root and the root sends the "ok" back to start a new phase. The overhead for the synchronisation is $2p$ after phase $p$. Since $p\leq D$ (actually $\leq R$) we get a time complexity of $O(D^2)$ in total. The message complexity is O($m+nD$).
 
 This synchronization method is useful in other settings too.

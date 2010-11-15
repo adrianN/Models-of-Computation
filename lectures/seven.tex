@@ -1,0 +1,105 @@
+\section{Routing and Small Worlds}
+
+See \href{http://en.wikipedia.org/wiki/Small_world_experiment}{Wikipedia:Small world experiment} for the general setting.
+
+\subsection{Model and Decentralized Algorithms}
+
+The first observation is that real networks, e.g. social networks, are rich in local connections: we know many people in our university, but few people in neigbouring cities. The model should reflect that. We consider a superposition of two graphs.
+
+Let $G_n(l,f,\alpha)$ be the graph we will consider. The vertex set are points on a $\sqrt{n}\times \sqrt{n}$ grid. Distance $d(u,v)$ between vertices is computed by Manhatten distance. We have two kinds of edges:
+
+\begin{itemize}
+\item \emph{Local contacts}: Each vertex is connected to all vertices at distance $\leq l$
+\item \emph{Far contacts}: Every vertex has $f$ far contacts, that are randomly chosen. The probability to choose an edge $(u,v)$ is proportional to $d(u,v)$
+\[P(\text{$u$ chooses $v$}) = \frac{d(u,v)^{-\alpha}}{\sum_{w\neq u} d(u,w)^{-\alpha}}\]
+\end{itemize}
+
+In the pure grid graph with only local contacts the diameter is very high, on the order of $\sqrt n$. Adding random neighbours changes this. The factor $\alpha$ regulates how important the distance is for the probability to choose neighbours. At $\alpha=0$ we have a uniform distribution.
+
+We want to send messages along "short" paths in this graph. We assume that the algorithm knows the local connections of all vertices and the coordinates of the target node $t$. Under certain circumstances we will also assume that we know all the far edges of the previous hops. Let's call such algorithms \emph{decentralised}.
+
+\begin{thm}\label{thm:small_world_graphs} Let $l,f\geq 1$ and let $0\leq \alpha \leq 2$. There is a constant $c=c(l,f,a) > 0$ such that if D denotes the diameter of $G_n(l,f,\alpha)$ then $P(D<c\log n) \geq 1-o(1)$
+\end{thm}
+
+Note that if $\alpha \geq 2$ the statement becomes false (the diameter becomes $n^\epsilon$ with $\epsilon > 0$). The next statement concerns finding such paths.
+
+\begin{thm}\label{thm:finding_short_paths} \mbox{}\begin{enumerate}
+\item Let $l=f=1$, $\alpha =2$. Then there is a decentralised algorithm $A$ with expected delivery time $O(\log^2n)$
+\item Let $l,f\geq 1$, $0 \leq \alpha \lneq 2$. Then there is a $c=c(l,f,\alpha)>0$ such that the expected delivery time of any decentralized algorithm is at least $c n^{\frac{2-\alpha}{3}}$.
+\end{enumerate}
+\end{thm}
+
+Recall: If $X = \sum_{i=1}^n X_i$
+\begin{align*}
+Var(X) &= \E\left(\left(\sum X_i\right)^2\right) - \E\left(\sum X_i\right)^2\\
+	&= \sum_{1\leq i, j\leq n} (\E(X_iX_j) - \E(X_i)\E(X_j))
+\end{align*}
+
+also useful: \href{http://en.wikipedia.org/wiki/Chebyshev\%27s_inequality}{Wikipedia:Chebyshev's inequality}. Further:
+
+\begin{lem} Let $0\leq x \leq 1$. Then
+\begin{enumerate}
+\item $1-x\leq e^{-x}$
+\item $e^{-x} \leq 1-x+\frac{x^2}{2}$
+\end{enumerate}
+\end{lem}
+\begin{pr} Consider the series expansion:
+\[e^{-x} = \sum_{i\geq 0} \frac{(-x)^i}{i!} = 1-x+\frac{x^2}{2} - \ldots\]
+1. holds because 
+\[\sum_{i\geq 1} \frac{x^{2i}}{(2i)!} - \frac{x^{2i+1}}{(2i+1)!} \geq 0\]
+and 2. holds because
+\[\sum_{i\geq 1} \frac{x^{2i-1}}{(2i-1)!} - \frac{x^{2i}}{(2i)!} \geq 0\]
+\end{pr}
+
+\begin{pr}[Theorem \ref{thm:small_world_graphs}] We will assume $\alpha=0$ and $n$ "large enough" to make things easier. Under these assumptions $\forall u: \sum_{v\neq u} d(u,v)^{-\alpha} = n-1$. 
+
+For $S\subset V$ let 
+\[X(S) = \bigcup_{v\in S} \tilde N(v) \backslash S\]
+
+where $\tilde N(v)$ is one far-away neighbour $f_v$ of $v$ and $f_v$'s right neighbour. Let $C_0$ be the upper left subgrid of sidelength $\log n$ and let
+
+\[C_{i+1} = X(C_{i-1})\]
+
+We will show that 
+
+\begin{enumerate}
+\item with probability $1-o(1/\log n)$ we have $|C_i| \geq 1.5 |C_{i-1}|$, as long as $|C_i| \leq 8 \frac{n}{\log n}$. So after few iterations we see many vertices. 
+\item Let $i^*$ be the smallest $i$ s.t. $|C_i| \geq 8\frac{n}{\log n}$. We then proceed to show that every vertex that is not in $C_{i^*}$ can be reachen in O($\log n$) steps.
+\end{enumerate}
+
+From these facts follows the theorem, as we can go from any vertex to a vertex in $C_{i^*}$ in O($\log n$) steps, proceed to $C_0$ and take the direct route there ($C_0$ has small diameter).
+
+Let $v\not \in C_{i-1}$. Define a random variable $X_v$ that is $1$ if $v\in C_i$.
+
+\[X_v = \begin{cases} 1& \exists v'\in C_{i-1}: v\in \tilde N(v')\\ 0& \text{otherwise}\end{cases}\]
+
+Clearly the sum of these variables is exactly $|C_i|$. We use Chebishev to bound the size of $C_i$ (so we first compute the variance). Let $|C_i| = S$
+
+Since $X_v$ is an indicator variable we have 
+
+\[\E(X_v) = 1-P(X_v=0)\]
+	
+$X_v$ is 1 if either $v$ is a far contact of some node, or $v$'s left neighbour, $u$, is such a contact. The probability that one vertex selects $v$ or $u$ is $2/(n-1)$. Since the choices are independent:
+
+\[\E(X_v) = 1-\left(1-\frac{2}{n-1}\right)^S\]
+
+Of course if $v$ is on the left edge of the grid we get $1/(n-1)$, but we'll ignore that for now. For calculating the variances we need $\E(X_uX_v)$ too. We have
+
+\[\E(X_vX_u) = 1-P(X_u=0) - P(X_w=0) + P(X_u=X_v=0)\]
+
+by inclusion-exclusion. The interesting part is $P(X_u=X_v=0)$. There are several cases: If $u$ and $v$ aren't left neighbours of each other and don't lie on the border we mustn't choose one of $4$ nodes. If they lie next to each other there are $3$ forbidden vertices.
+
+\[\E(X_vX_u) = 1-2\left(1-\frac{2}{n-1}\right)^S+\left(1-\frac{\xi}{n-1}\right)^S \quad \xi = \begin{cases}4 &\text{not neighbours}\\ 3 &\text{right neighbours}\end{cases}\]
+
+With these two expectations we can compute the variance. The following formula also considers the edge cases:
+
+\begin{align*}
+\E(C_i) &\geq (n-|C_{i-1}| -\sqrt n) \cdot \left(1-\left(1-\frac{2}{n-1}\right)^S\right) \\
+ &\geq \left(n- 8\frac{n}{\log n} - \sqrt{n}\right) \cdot \left(1-e^{-\frac{2s}{n-1}}\right)\\
+ &\geq \left(n- 9\frac{n}{\log n}\right) \cdot \left(1-e^{-\frac{2s}{n-1}}\right)\\
+ &\geq \left(1- 9\frac{n}{\log n}\right)n \cdot \left(1-\left(1-\frac{2s}{n-1}+\frac 12 \left(\frac{2s}{n-1}\right)^2\right)\right)\\
+ &\geq \left(1- 9\frac{n}{\log n}\right)\left(2S\left(1+\frac{1}{n-1}-(1+o(1))\frac{2s^2}{n}\right)\right)\\
+Since \intertext{$S \in o(n)$}\\
+ &\geq (1- o(1))2S\\
+\end{align*}
+\end{pr}

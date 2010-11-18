@@ -64,7 +64,7 @@ We will show that
 
 \begin{enumerate}
 \item with probability $1-o(1/\log n)$ we have $|C_i| \geq 1.5 |C_{i-1}|$, as long as $|C_i| \leq 8 \frac{n}{\log n}$. So after few iterations we see many vertices. 
-\item Let $i^*$ be the smallest $i$ s.t. $|C_i| \geq 8\frac{n}{\log n}$. We then proceed to show that every vertex that is not in $C_{i^*}$ can be reachen in O($\log n$) steps.
+\item Let $i^*$ be the smallest $i$ s.t. $|C_i| \geq 8\frac{n}{\log n}$. We then proceed to show that every vertex that is not in $C_{i^*}$ can be reached in O($\log n$) steps.
 \end{enumerate}
 
 From these facts follows the theorem, as we can go from any vertex to a vertex in $C_{i^*}$ in O($\log n$) steps, proceed to $C_0$ and take the direct route there ($C_0$ has small diameter).
@@ -91,7 +91,9 @@ by inclusion-exclusion. The interesting part is $P(X_u=X_v=0)$. There are severa
 
 \[\E(X_vX_u) = 1-2\left(1-\frac{2}{n-1}\right)^S+\left(1-\frac{\xi}{n-1}\right)^S \quad \xi = \begin{cases}4 &\text{not neighbours}\\ 3 &\text{right neighbours}\end{cases}\]
 
-With these two expectations we can compute the variance. The following formula also considers the edge cases:
+With these two expectations we can compute the variance. 
+
+But first we bound the size of $C_i$. The following formula also considers the edge cases:
 
 \begin{align*}
 \E(C_i) &\geq (n-|C_{i-1}| -\sqrt n) \cdot \left(1-\left(1-\frac{2}{n-1}\right)^S\right) \\
@@ -99,7 +101,6 @@ With these two expectations we can compute the variance. The following formula a
  &\geq \left(n- 9\frac{n}{\log n}\right) \cdot \left(1-e^{-\frac{2s}{n-1}}\right)\\
  &\geq \left(1- 9\frac{n}{\log n}\right)n \cdot \left(1-\left(1-\frac{2s}{n-1}+\frac 12 \left(\frac{2s}{n-1}\right)^2\right)\right)\\
  &\geq \left(1- 9\frac{n}{\log n}\right)\left(2S\left(1+\frac{1}{n-1}-(1+o(1))\frac{2s^2}{n}\right)\right)\\
-Since \intertext{$S \in o(n)$}\\
+\intertext{Since $S \in o(n)$}\\
  &\geq (1- o(1))2S\\
 \end{align*}
-\end{pr}

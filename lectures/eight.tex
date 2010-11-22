@@ -1,0 +1,157 @@
+Now we proceed to calculate the variance:
+
+\begin{align*}
+\var(|C_i|) &= \sum_{u,v} \E(X_uX_v) - \E(X_u) \E(X_v)\\
+\end{align*}
+
+There are two cases for the summands:
+
+\begin{itemize}
+\item $u=v$. We get
+
+\[\var(|C_i|) \leq \E(X_uX_v) = \E(X_u^2) = \E(X_u)\]
+
+The total contribution of these summands is $\leq \E(|C_i|)$
+
+\item $u$ is a left neighbour of $v$. We get
+
+\begin{align*}
+\E(X_uX_v) -E(X_u) \E(X_v) &= 1-2(1-\frac{2}{n-1})^S  (1-\frac{3}{n-1})^S -(1-(1-\frac{2}{n-1})^S)^2\\
+	&=1-2(1-\frac{2}{n-1})^S+(1-\frac{3}{n-1})^S -(1-2(1-\frac{2}{n-1})^S+(1-\frac{2}{n-1})^{2S})\\
+	&=(1-\frac{3}{n-1})^S -(1-\frac{2}{n-1})^{2S}\\
+\intertext{As $(1-x)^n\geq 1-nx$}
+	&\leq 1 -(1-\frac{4S}{n-1})\\
+	&=\frac{4s}{n-1}
+\end{align*}
+	
+There are less than $2n$ such pairs, so we get a total contribution of $\leq \frac{4s}{n-1}2n \leq 9S$
+
+\item $u$ and $v$ are somewhere distributed on the grid. 
+
+\begin{align*}
+\E(X_uX_v)-\E(X_u)\E(X_v) &= 1-2(1-\frac{2}{n-1})^S+(1-\frac{4}{n-1})^S-(1-2(1-\frac{2}{n-1})^S +(1-\frac{2}{n-1})^{2S})\\
+&= (1-\frac{4}{n-1})^S - (1-Sfrac{2}{n-1})^{2s}\\
+&= (1-\frac{4}{n-1})^S-(1-\frac{4}{n-1}+\frac{4}{(n-1)^2})^S\\
+\end{align*}
+
+Hence the total contribution is at most $\leq 0$.
+\end{itemize}
+
+Combining all the cases we get 
+
+\begin{align*}
+\var(|C_i|) &\leq \E(|C_i|) +9S + 0 \\
+	&\leq 2s+9S\leq 11S
+\end{align*}
+
+By applying Chebychev's inequality we can bound the probability that the $C_i$ don't grow fast enough:
+
+\[P(|C_i| \leq \frac 32 |C_{i-1}|) = P(||C_i| - \E(|C_i|) | \geq \frac 13 |C_i|) \leq \frac{99}{S} = O(\log ^{-2} n)\]
+
+The last equality holds because we start with $S=\log ^2n$. 
+
+This completes the first part of the proof. We have shown that the $C_i$ grow in every step with high probability and hence we reach $C_{i^*}$ in just a logarithmic number of steps. We now want to show that we can reach all nodes from $C_{i^*}$ with only a few additional steps.
+
+We take a $\log n$ sidelength box around a vertex $v$ and show that there is an edge from that box to $C_{i^*}$. Let $Y_v$ be an indicator random variable that is 1 if no vertex in $C_{i^*}$ sends a vertex to the box of $v$. Let $Y=\sum_v Y_v$. We want $Y$ to be $0$ (i.e. all boxes have such an edge) with high probability.
+
+\begin{align*}
+P(Y>0) &\leq \E(Y) \\
+	&= \sum_v \E(Y_v)\\
+	&= \sum_v (1-\frac{\log^2n}{n-1})^{|C_{i^*}|}\\
+	&\leq n (e^{-\log^2n/(n-1)\cdot 8\cdot \frac{n}{\log n}})\\
+	&\leq n \cdot \exp(-8\log n \cdot \frac{n}{n-1})\\
+	&=\exp \log n - 8(1+o(1))\log n\\
+	&=\exp -7(1+o(1)) \log n
+	&=o(1)
+\end{align*}
+
+This completes the proof for the diameter.
+\end{pr}
+
+\begin{pr}[Theorem \ref{thm:finding_short_paths}] For this proof we assume $\alpha=2,l=f=1$. Let $A$ be the current message holder. $A$ passes the message on to that neighbour that is closest to the target (by Manhattan distance). We want to show that the expected travel time of the message is $O(\log^2n)$.
+
+Recall that 
+
+\[P((u,v)\in E_{\text{far}}) = \frac{d(u,v)^{-2}}{\sum_{w\neq u}d(u,w)^{-2}}\]
+
+Let's try to estimate $\sum_{w\neq u}d(u,w)^{-2}$. Let $N_d(u) = |\{w|d(u,w)=d\}|$. Observe:
+
+\begin{align*}
+\sum_{w\neq u}d(u,w)^{-2} &= \sum_{d=1}^{\sqrt n} d^2\cdot N_d(u)\\
+\intertext{Note: $d\leq |N_d(u)|\leq 4d$ (draw a picture). The lower bound holds for $d\leq (\sqrt n) /2$}
+	&\leq \sum_{d=1}^{2\sqrt n} 4 d^{-1}\\
+	&\leq 4 \ln(2\sqrt{n})
+\end{align*}
+
+We say that $A$ is in phase $J$ if the current distance to $t$ is $2^{j-1} < t \leq 2^j$. Initially $j$ is at most $\log (2\sqrt n)$. It is clear that we have only logarithmically many phases with this definition. We need to bound the time we stay in one phase.
+
+Note: In every step the distance to the target decreases, as each node sends the message to the neighbour that is closest to the target. Hence a vertex is has the message at most once. In particular we haven't seen the far-edge of the current vertex before. We can thus consider in random in every step (the algorithm doesn't change if we generate the far connection as we first reach the vertex).
+
+Suppose $A$ is in phase $j$ at vertex $v$. Let $B_j$ be the number of vertices at distance $\leq 2^{j-1}$ from $t$. 
+
+\[B_j = \sum_{d=1}^{2^{j-1}} N_d(t)\geq \sum_{d=1}^{2^{j-2}} N_d(t)\]
+
+As $2^{j-2} \leq 2^{\log(2\sqrt{n})-2} = \sqrt{n}/2$ and we bounded $d$ we can bound $B_j$
+
+\[B_j \geq \left( {2^{j-2}+1} \atop 2 \right) \geq 2^{2j-5}\]
+
+We can proceed to bound the probabilty that the algorithm ends in the next step.
+
+\begin{align*}
+P(\text{phase ends}) &= \sum_{u\in B_j} \frac{d(v,u)^{-2}}{\sum_{w\neq v} d(v,w)^{-2}}\\
+\intertext{Go to $t$ then go to $u$}
+&\geq \sum_{u\in B_j} \frac{(2^j+2^{j-1})^{-2}}{4\ln \sqrt{n}}\\
+&\geq B_j \cdot \frac{(2^{j+1})^{-2}}{4\ln n}\\
+&\geq 2^{2j-5} \cdot \frac{2^{-2j-2}}{4\ln n}\\
+&=\frac{2^{-5}}{\ln n}
+\end{align*}
+
+So in expectation we need the inverse of that probability many steps until we are done with a phase (formally: define a geometric random variable, find its expectation).
+
+It follows that we need O($\log^2n$) many steps, as there are logarithmically many phases.
+
+We now show the second part of the theorem. Let $0\leq \alpha < 2$ and $l,f\geq 1$. We show there are parameters such that any algorithm has a bad running time.
+
+To show this we make the algorithm slightly stronger. In step $i$ let $S_i$ be the set of vertices that have touched the message. The algorithm can send the message to any neighbour of a vertex in $S_i$. In other words: backtracking is free.
+
+As in the previous case we estimate the probability that $u$ chooses $v$ as a far neighbour.
+
+\[P((u,v)\in E_{\text{far}}) = \frac{d(u,v)^{-\alpha}}{\sum_{w\neq u}d(u,w)^{-\alpha}}\]
+
+We do the same trick as before and split the sum up according to the distance of the nodes.
+
+\begin{align*}
+\sum_{w\neq u} d(u,v)^{-\alpha} &\geq \sum_{d=1}^{\sqrt{n}/2} N_d(u)d^{-\alpha}\\
+	&\geq \sum_{d=1}^{\sqrt n/2} d^{-\alpha +1}\\
+	&\geq \int_1^{\sqrt{n}/2} x^{-\alpha+1}\ dx\\
+	&=\left. \frac{x^{-\alpha +2}}{2-\alpha}\right|_1^{\sqrt{n}/2}\\
+	&=\frac{1}{2-\alpha} ((\frac{\sqrt n}{2})^{-\alpha +2} -1)\\
+	&\geq n^{(2-\alpha)/2} \cdot \frac{1}{2-\alpha} \cdot 2^{\alpha-3}
+\end{align*}
+
+So instead of something logarithmic, we got some polynomial. We now show that this happens with high probability.
+
+Take the two vertices $(u,v)$ of the grid s.t. the distance between them is maximal (e.g. the edges of the grid). Let $\delta = \frac{2-\alpha}{6}$ and let $U=\{u|d(u,t) \leq ln^\delta\}$. For the size of $U$ we get $|U| \leq l^2n^{2\delta}$. Let $E_n$ be the event that within $\lambda n^\delta$ steps the message will reach a node that has a for contact in $U$. Let $\lambda = (2^{7-\alpha} \cdot f \cdot l^2)^{-1}$. 
+
+\[E:= \bigcup _{i=1}^{\lambda n\delta} E_i\]
+
+We will show that the probability of the event $E$ ist small. $c_alpha = \frac{2^{\alpha-3}}{2-\alpha}$
+
+\begin{align*}
+P(E_i) &\leq |U| \cdot 2fc_\alpha^{-1} \cdot n^{-\frac{2-\alpha}{2}}\\
+	&\leq 2f\cdot c_\alpha^{-1} \cdot l^2 \cdot n^{\frac{2-\alpha}{3} -\frac{2-\alpha}{2}}\\
+	&=2f\cdot c_\alpha ^{-1} l^2 \cdot n^{-\delta}
+\end{align*}
+
+We can now apply a union bound to get $P(E)$
+
+\begin{align*}
+P(E) &\leq\sum_{i=1}^{\lambda n\delta} P(E_i)\\
+	&\leq  \lambda n^\delta \cdot 2f\cdot \alpha^{-1} \cdot l^2 n^{-\delta}\\
+	&= \frac{1}{2^{7-\alpha} fl^2} \cdot 2f\cdot \frac{2-\alpha}{2^{\alpha-3}} \cdot l^2\\
+	&=(2-\alpha)\cdot 2^{-3}\\
+	&\leq \frac{1}{4}
+\end{align*}
+
+Hence after $\lambda n^\delta$ steps we haven't reached a node with a for contact into $U$ with probability at least $3/4$. And by the definition of $U$ we don't progress fast within $U$ either.\footnote{Why exactly?}.
+\end{pr}

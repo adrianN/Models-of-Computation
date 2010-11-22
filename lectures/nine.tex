@@ -1,0 +1,79 @@
+
+
+\subsection{Greedy Embeddings}
+
+We want to embed the graph in a space such that we can successfully find a path between two nodes just by looking at the neighbours and the knowledge about the coordinates. An embedding $f$ is greedy if for any $s\neq t\in V$ then there is a $v\in N(s)$ such that the distance decreases:
+
+\[d(f(v),f(t)) < d(f(s),f(t))\]
+
+In a greedy embedding any $t\in V$ has an edge to $v$ that is closest in the embedding (otherwise $v$ can't be reached greedily).
+
+For example hamiltonian graphs have a greedy embedding on the euclidian plane (draw them as a line). However not all graphs have such an embedding on the plane.
+
+\begin{lem} $K_{k,5k+1}$, $V=A\dot \cup B$ has no greedy embedding in the euclidian plane. 
+\end{lem}
+
+\begin{pr} Assume for the sake of contradiction that $f:V\rightarrow \R$ is a greedy embedding.Let $c(v)$ be the closest vertex in A in $f$. There is a vertex $a\in A$ which is the closest neighbour for $b_1,b_2,\ldots b_6\in B$. The circle around $b_{i+1}$ with radius $d(a,b_{i+1})$ must be empty since it can't contain vertices from $A$ by choice of $a$ and it mustn't contain vertices from $B$ (otherwise there would be edges within $B$). 
+
+% pic star
+
+There must be an angle that is less or equal to the average $\leq \pi/3$. Let $\phi_a\leq \pi/3$ be the angle between $b_i$ and $b_{i+1}$. Consider the triangle $a,b_i,b_{i+1}$. Since the anglesum in triangles is $\pi$ there must also be an angle, wlog the largest of those is $\phi_i$, that is $\geq \pi/3$. But then the distance between $b_i$ and $b_{i+1}$ is defined by the law of sines:
+
+\[\sin \phi_a / d(b_i,b_{i+1}) = \sin \phi_i / d(a,b_{i+1})\]
+
+Since $\phi_a \leq \pi/3 \Rightarrow \sin \phi_a \leq \sqrt{3}/2$. We need $\phi_i\leq 2\pi/3$ and we get
+
+\[\frac{\sqrt{3}}2 \cdot 1\frac{1}{d(b_i,b_{i+1})} \geq \frac{\sin \phi_a}{d(b_i,b_{i+1})} = \frac{\sin \phi_i}{d(a,b_{i+1})} \geq \frac{\sqrt 3}{2} \cdot \frac{1}{d(a,b_{i+1})}\]
+
+And hence $d(a,b_{i+1})\geq d(b_i,b_{i+1})$
+\end{pr}
+
+\begin{thm} Every 3-connected planar graph has a greedy embedding. \qed\end{thm}
+
+The theorem is as good as it can be, since we know $K_{2,11}$ (2-connected) and $K_{3,16}$ (3-conn, not planar) have no embedding.
+
+This is however not useful, since the networks we're considering don't have that property.
+
+\subsection{Greedy routing in normed spaces}
+
+Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a different difference metrik. A norm needs to have these properties
+
+\begin{enumerate}
+\item $\norm{0} = 0$, $v\neq 0 \Rightarrow \norm{v} >0$
+\item $\norm{\alpha v} = |\alpha | \cdot \norm{v}$
+\item $\norm{x+y} \leq \norm x +\norm y$
+\end{enumerate}
+
+With the norm it is easy to define the distance as the length of the vector between two points.
+
+\begin{lem} Let $(\R^n, \norm{\cdot})$ be a normed space. If it admits a greedy embedding of any graph with $N$ vertices then
+
+\[n \geq \log_3(N-1)\]
+\end{lem}
+
+\begin{pr} Consider a star with a central vertex $u$ and $N-1$ vertices around it. Let $f$ be a greedy embedding that maps $u$ to $0$. Let $x_i=f(u_i)$, $l_i=\norm{x_i}$ and $w_i = x_i/l_i$.
+
+Claim: $\norm{w_i-w_j} \geq 1$ if $i\neq j$. Assume otherwise. Consider $d(x_i,x_j)=\norm{x_i,x_j}$.
+
+\begin{align*}
+d(x_i,x_j)&=\norm{x_i,x_j} \\
+	&=\norm{l_iw_i - l_jw_j}\\
+	&=\norm{l_i(w_i-w_j) -(l_j-l_i)w_j}\\
+  &\leq l_i \norm{w_i-w_j} + |l_j-l_i|\cdot \norm{w_j} && (l_i\leq l_j)\\
+  &< l_i + |l_j-l_i|\\
+  &=l_j = \norm{x_j}\\
+  &=d(f(u_j),0)
+\end{align*}
+
+So the distance between $u_i$ and $u_j$ is strictly smaller than the distance between $u_j$ and the origin, a contradiction.
+
+Hence balls of radius $1/2$ around each $u_i$ is empty and the ball of radius $3/2$ around $u$ contains $N-1$ smaller balls.
+
+\[\Vol(B_{3/2}) \geq (N_1)\Vol(B_{1/2})\]
+
+In normed spaces $\Vol(B_r) = r^n \Vol(B_1)$. We get
+
+\[\frac 32 \Vol(B_1) &\geq (N-1)(\frac 12^n \cdot \Vol(B_1)\]
+
+And thus $3^n\geq N-1$
+\end{pr}

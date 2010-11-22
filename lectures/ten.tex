@@ -1,0 +1,131 @@
+\begin{thm} Let $T$ be a tree with $n$ vertices. Then $T$ has a greedy embedding in ($\R^d,\norm{\cdot}_{\infty}$), $d=\rup{\log_{4/3}n}$.
+\end{thm}
+
+\begin{pr} We will construct an embedding that is not only greedy, but also preserves all distances. if $|T|=1,2$, then it is obviously easy to embed it. We proceed with induction on $|T|\geq 3$. We find a "center" of the tree
+
+%pic center of a tree
+
+where $|L|,|R| \leq 3/4n$.\footnote{Every tree has such a vertex, Exercise}. With this choice we have
+
+\[\rup{\log_{4/3}|L|} \leq \rup{\log_{4/3}(3/4n)} \leq \rup{\log_{4/3}n}-1\]
+
+With the induction hypothesis we can find embeddings $f_R,f_L$ in $d-1$ dimensions for the two subtrees. Wlog $f_L(c) = f_R(c) = 0$. We can now construct a mapping for the whole tree.
+
+\[f(v) = \begin{cases}
+0& v=c\\
+(f_L(v),d_T(v,c)) & v\in L\\
+(f_R(v),-d_T(v,c)) & v\in R\\
+\end{cases}\]
+
+It is fairly obvious that this isometric. We have several cases. If two nodes are in different subtrees we have for $v\in L, w\in R$
+
+\[d_T(v,w)=d_T(v,c)+d_T(c,w)\]
+
+In the mapping we have
+
+\begin{align*}
+\norm{f(v)-f(w)}_{\infty} & \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
+	&\geq |f(v)_d-f(w)_d|\\
+	&= |d_t(v,c)+d_T(w,c)|\\
+	&=d_T(v,w)
+\end{align*}
+
+and since $c$ was mapped to $0$ and the embedding in constructed inductively, vertices at $d_T(v,c)=k$ have coordinates with entries $\{\pm i | 0 \leq i\leq k\}$. From this we can also derive an upper bound:
+
+\begin{align*}
+|f(v)_i-f(w)_i| &\leq d_T(v,c)+d_T(w,c)\\
+	&=d_T(v,w)
+\end{align*}	
+
+In another case $v,w\L$. There are again several cases. It can happen that $v,w$ are on a path to $c$. Then
+
+\[d_T(w,v) = | d_T(w,c)-d_T(v,c)|\]
+
+if they are different paths, but the paths are not edge disjoint we have
+
+\[d_T(v,w) \geq |d_T(v,c) - d_T(w,c)|\] 
+
+Again we want to compute the distance in the embedding.
+
+\begin{align*}
+\norm{f(v)-f(w)}_\infty &= \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
+	&=\max \{{\norm{f_L(v)-f_L(w)}_\infty, |f(v)_d-f(w)_d|\}\\
+	&=\max\{ d_T(v,w), |f(v)_d-f(w)_d|\} && \text{IH}\\
+	&=\max\{ d_T(v,w), |d_T(v,c)-d_T(w,c)|\} && \text{def. $f_d$}\\
+	&= d_T(v,w)
+\end{align*}
+\hfill\qed
+\end{pr}
+
+It is obviously not possible to do an isometric embedding for general graphs. However we can find a greedy embedding, by calculating a suitable spanning tree.
+
+\begin{thm} Every connected graph $G$ with $n$ vertices has a greedy embedding in ($\R^d,\norm{\cdot}_{\infty}$), $d=\rup{\log_{4/3}n}$.
+\end{thm}
+
+\begin{pr}
+Let $H\subset G$, $V(H) = V(G), E(H) \subset E(G)$ with $H$ connected. Any greedy embedding for $H$. Any greedy embedding for $H$ is also one for $G$. 
+\end{pr}
+
+Now we how that an embedding exists. We need to show how to find it efficiently.
+
+\begin{thm} A greedy embedding of a graph $G$can be computed by a distributed synchronous algorithm in time $O(D\log n)$.\end{thm}
+
+\begin{pr}[Sketch.] We start by computing a BFS tree. We proceed by computing an embedding for that tree. Recursively find centers of the tree. This can be done by flooding and echoing. Every vertex can count how many vertices are in the graph and can compute the number of vertices in its subtrees. The potential centers can then coordinate. 
+
+After a center is found we can compute the partitioning and proceed recursively in parallel. Leafs can finally compute their coordinates. The mappings can then be merged as in the above theorem.
+
+Computing BFS trees takes $O(D)$. The other parts of the algorithm all take time $O(D)$, as they are implemented by flooding and echoing. Since the size of subtrees are bounded by $3/4n$, at most logarithmically many such steps need to be done.
+\end{pr}
+
+By using this construction we can greedily embed the graph in logarithmically many dimensions. However it is possible to find a fixed dimensional space that admits such an embedding. Unfortunately we need hyperbolic space for that and hyperbolic space is very strange. It is an open research topic to find (nearly) isometric embeddings for real networks.
+
+\section{Dynamic Graphs}
+
+Many real-world networks change rather fast. In P2P networks or mobile networks clients appear and disappear and the topology of the network changes over time.
+
+Let's define a dynamic graph as a graph whose vertices don't change, but whose edge set is a function from time to sets of pairs of vertices. Of course if the edges are chosen maliciousy we can't compute anything meaningful.
+
+\begin{Def} A dynamic graph is $T$-interval connected, if the (static) graph
+
+\[G_{r,T} = (V, \bigcap_{i=r}^{r+T-1} E(i))\]
+
+is connected for all $r\geq 0$.
+\end{Def}
+
+If the graph is connected in each timestep it is $T-1$ connected. If a graph is $T-2$ connected the intersection must always contain a spanning tree. Hence $T-\infty$ connected graphs have one spanning tree that is always there.
+
+We use asynchronous broadcast for communication:
+\begin{enumerate}
+\item each node decides what it wants to breacast
+\item independently, without knowledge about the choices, an adversary chooses the edgeset.
+\item the nodes transmit on the new graph
+\item local computations take place
+\end{enumerate}
+
+Initially one a few nodes wake up (asynchronous start). Nodes have IDs and some local data.
+
+\subsection{Problems}
+
+It is already difficult to find the number of vertices in the graph. A slightly simpler problem is to verify that there are at most $k$ vertices in the graph (s.t. the information is present at each node).
+
+Another, more general, problem is called k-token dissemination. Here we have a finite set $S$ and a fuction $I:V\rightarrow \mathcal{P}(S)$. We want to find out if 
+
+\[|\bigcup_{v\in V} I(v)| = k\]
+
+The last problem we will consider is k-comitee election: Nodes want to partition themselves in groups s.t. the size of each group is smaller than $k$ and  if $k\geq n$ there is only one group.
+
+\subsection{Basic Information Dissemination}
+
+We want to find an algorithm that broadcasts a message to all nodes in the graph.
+
+\begin{thm} Assume that there is a single token in network, initially placed at an arbitrary vertex. Once a node gets the token it starts broadcasting it to all of its current neighbours in each round. In an $T-1$ connected graph, after $r\leq n-1$ rounds, at least $r+1$ nodes have the token.\end{thm}
+
+\begin{pr} Let $T(r)$ be the set of nodes that have tho token. We show $T(r) \geq \min\{r+1,n\}$. Initially everything is fine. We proceed by induction.
+
+Since the graph is connected in each round, there must be at least one edge from $T(r)$ to $V\backslash T(r)$, so the size of $T$ increases by at least one.
+\end{pr}
+
+To get a stopping criterion it would be useful to know $n$.
+
+\begin{thm} Counting is impossible in $T-1$ connected graphs with asynchronous start.
+\end{thm}

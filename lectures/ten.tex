@@ -30,7 +30,7 @@ In the mapping we have
 	&=d_T(v,w)
 \end{align*}
 
-and since $c$ was mapped to $0$ and the embedding in constructed inductively, vertices at $d_T(v,c)=k$ have coordinates with entries $\{\pm i | 0 \leq i\leq k\}$. From this we can also derive an upper bound:
+and since $c$ was mapped to $0$ and the embedding in constructed inductively, vertices at $d_T(v,c)=k$ have coordinates with entries $\{\pm i |0\leq i\leq k\}$. From this we can also derive an upper bound:
 
 \begin{align*}
 |f(v)_i-f(w)_i| &\leq d_T(v,c)+d_T(w,c)\\
@@ -49,7 +49,7 @@ Again we want to compute the distance in the embedding.
 
 \begin{align*}
 \norm{f(v)-f(w)}_\infty &= \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
-	&=\max \{{\norm{f_L(v)-f_L(w)}_\infty, |f(v)_d-f(w)_d|\}\\
+	&=\max \{	\norm{f_L(v)-f_L(w)}_\infty, |f(v)_d-f(w)_d|\}\\
 	&=\max\{ d_T(v,w), |f(v)_d-f(w)_d|\} && \text{IH}\\
 	&=\max\{ d_T(v,w), |d_T(v,c)-d_T(w,c)|\} && \text{def. $f_d$}\\
 	&= d_T(v,w)

@@ -1,0 +1,72 @@
+\chapter{Parallel Computing}
+
+\section{Introductary Example}
+
+Given two $n\times n$ matrices $A,B$, we want to find the product.
+
+\[C=AB \qquad (c_{ij} = \sum_{k=1}^n a_{ik} b_{kj})\]
+
+Naive sequential computation takes time $O(n^3)$. The fastest known algorithm takes about $O(n^{2.38})$.
+
+Obviously we can compute the $n^2$ entries in parallel. This gives us a parallel algorithm that takes linear time on $n^2$ processors. We can further increase the parallelism by splitting the sum on $n$ more processors. Combining the results takes only logarithmic time, so we can do matrix multiplication in $O(\log n)$ with $n^3$ processors.
+
+The model we will use for this part of the course is the PRAM, the parallel random access machine. The main difference to the previous topic is the existence of a shared memory that can be accessed by all processors in constant time. We will only consider synchronized versions with a global clock.
+
+There are three types of PRAMS, depending on concurrent memory access is specified:
+
+\begin{itemize}
+\item Exclusive Read, Exclusive Write (EREW)
+\item Exclusive Write, Concurrent Read (CREW)
+\item Concurrent Write, Concurrent Read: What happens there is nondeterministic (other definitions are possible)
+\end{itemize}
+
+There are different ways to measure the complexity. One possibility is to model an algorithm as a circuit and use the circuit complexity, ie the total number of gates (the \emph{work} $W$) and the depth $D$ of the circuit . This view abstracts away the actual number of processors available and how to handle memory accesses. 
+
+The running time on $P$ processors is at least $\max(W/P,D)$. 
+
+\begin{thm} An algorithm with work $W$ and depth $D$ can be executed in time $O(W/P+D)$ on a CREW PRAM with $P$ processors.\end{thm}
+
+\begin{pr} Let level $i$ of a circuit be all gates that only use inputs from levels up to $i-1$ and have at least one input thet uses at least one input from level $i-1$. Level 0 is the input. Let $l_i$ be the number of gates at level $i$
+
+If we proceed levelwise in parellel with $P$ processors we need time
+
+\[\sum_{i=1}^D \rup{\frac{l_i}{p}}\leq \sum_{i=1}^D 1+\frac{l_i}{p} = D+\frac 1p \sum_{i=1}^D l_i = \frac Wp +D\]
+
+\end{pr}
+
+\begin{cor} $P= \Omega(W/D)$ processors suffice to achieve running time $O(D)$\end{cor}
+
+\section{Basic parallel algorithms}
+
+\begin{enumerate}
+\item given an array A[$1\ldots n$] (w.l.o.g $n=2^k$), we want to find the sum of the entries. 
+
+\begin{lstlisting}
+SUM(A) 
+if |A| = 1 then
+	return A[1]
+else
+	for $i=1\ldots n/2$ do in parallel
+		B[i] = A[i] + A[i+1]
+	return SUM(B)
+\end{lstlisting}
+
+\[W(n) = \frac n2 + W(\frac n2) \qquad \rightarrow W(n) = n\]
+\[D(n) = 1 + D(\frac n2) \qquad \rightarrow D(n) = \log n\]
+\item Prefix sum (/scan): given an array of numbers, find the sum of each prefix of the array $P[i] = \sum_{j\leq i} A[j]$
+
+\begin{lstlisting}
+SCAN(A)
+if |A|=1 return A
+else
+	for $i=1\ldots n/2$ do in parallel
+		B[i] = A[i] + A[i+1]
+	//S[0] = 0
+	S = SCAN(B)
+	for $i=1\ldots n/2$ do in parallel
+		P[2i] = S[i]
+		P[2i-1] = S[i-1] + A[2i-1]
+	return P
+\end{lstlisting}
+
+\end{enumerate}

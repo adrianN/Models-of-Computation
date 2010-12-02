@@ -1,0 +1,62 @@
+\section{Sorting algorithms}
+
+Given an array $A$ with pairwise distinct elements we want to compute an array $B$ with the same elements in sorted order. There is a lower bound of $\Omega(\log n)$ on CREW and $\Omega(\sqrt{\log n})$ on CRCW machines.
+
+\subsection{Quicksort}
+
+Everybody knows sequential quicksort. It can be trivially parallelised by doing the recursive calls in parallel. It is more tricky to split the array in parallel.
+
+Obviously we can compare each element to the pivot in parallel. If we construct an array that contains a 1 at position $i$ if the $i$-th element is larger than the pivot, we can compute a prefix sum over that and get the positions of the elements in the new array. With that information we can copy the values to the new array in parallel too.
+
+\begin{lstlisting}
+SPLIT
+for $i=1\ldots n$ do in parallel
+	if A[i] $\leq$ pivot then
+		F[i] = 0
+	else
+		F[i] = 1
+
+P := SCAN(F)
+
+for $i=1\ldots n$ do in parallel
+	if A[i] $\leq$ pivot then
+		A$_0$[i-P[i]] = A[i]
+	else
+	  A$_1$[P[i]] = A[i]
+\end{lstlisting}
+
+This way the work for sorting is still $O(n\log n)$ (with a slightly larger factor), but the depth of the algorithm is only O($\log^2 n$) (in the average case).
+
+\subsection{Mergesort}
+
+Mergesort can also be trivially parallelised in the recursive steps, but merging in parallel is more tricky.
+
+Suppose we have two sorted arrays $X,Y$ and want to merge them into one sorted array. The idea is to subdivide $X$ and $Y$ into a bunch of subarrays of equal size and recombine them later
+
+\begin{lstlisting}
+MERGE(X,Y)
+k:= [see later]
+divide X,Y into k subarrays of equal size
+let the endpoints be $x_0,\ldots, x_k, y_0,\ldots , y_k$
+
+for $i=0\ldots k$ do in parallel
+	$x_i^*$ = position of $x_i$ in Y
+	$y_i^*$ = position of $y_i$ in X
+	
+//here we have 2k subarrays for X and Y
+
+for $i=1\ldots 2k$ do in parallel
+	Z$_i$ = SequentialMerge(X$_i$, Y$_i$)
+	
+return Z
+\end{lstlisting}
+
+The work is 
+
+\[W=2(k+1)O(\log n) +  O(\underbrace{\sum_{i=1}^{2k} |X_i| + |Y_i|}_{2n})\]
+
+and the depth 
+
+\[D=O(\log n) +O(\underbrace{\max_{i=1\ldots 2k} (X_i+Y_i)}_{\leq n/k})\]
+
+We need to think about a good value for $k$ to get a good runtime. Obviously $k= n/\log n$ is a good choice.

@@ -16,7 +16,7 @@ To make things easier we will assume that all weights are distinct.
 \begin{lem} If all edge weights are distinct, the MST is unique \end{lem}
 \begin{pr} Suppose for the sake of contradiction that $T,T'$ are different MSTs. Let $e$ be the lightest edge of $T$ or $T'$ that is not contained in both trees. W.l.o.g $e\in T$. 
 
-Let $H$ be $T'\cup \{e\}$. Again the additional edge closes a cycle in $T'$. There must be some edge $e'$ on the cycle that isn't in $T$. Since $e$ was the lightest such edge and all weights are different, $w(e')\gneq w(e)$. Hence removing $e'$ would make $T'$ lighter.\end{pr}
+Let $H$ be $T'\cup \{e\}$. Again the additional edge closes a cycle in $H$. There must be some edge $e'$ on the cycle that isn't in $T$. Since $e$ was the lightest such edge and all weights are different, $w(e')\gneq w(e)$. Hence removing $e'$ would make $H$ a spanning tree that is lighter than $T'$, a contradiction to the minimality of $T'$.\end{pr}
 
 In an asynchronous setting we can't simply sort the edges by weight and add them one after the other unless they close cycles. Instead we will proceed as follows:
 

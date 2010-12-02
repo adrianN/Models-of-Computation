@@ -20,7 +20,7 @@ Define $W_{s,n}$ as the set of all $s$-tuples of nodes:
 
 Note that not all of these are valid neighbourhoods for a fixed ring, but for each tuple there is a ring for which it is a valid neighbourhood.
 
-Essentially after $t$ rounds, each vertex sees an element from $W_{2t+1,n}$. So any distributed algorithm colouring any right with $\leq 3$ colours calculates a function
+Essentially after $t$ rounds, each vertex sees an element from $W_{2t+1,n}$. So any distributed algorithm colouring any ring with $\leq 3$ colours calculates a function
 
 \[A:W_{2t+1,n} \longrightarrow \{1,2,3\}\]
 
@@ -41,7 +41,7 @@ where there is an edge in between two elements of $W_{s,n}$ in $E_{s,n}$ if they
 
 \begin{lem} The function $A$ is a valid colouring for the graph $G_{2t+1,n}$.\end{lem}
 
-\begin{pr} Let $\{v,v'\}\in E_{2t+1,n}$ be an edge as above. Assume for the sake of contradiction that $A$ does not produce a valid colouring, i.e. $A(v)=A(v')$. We now construct a ring that is a valid input for the algorithm.
+\begin{pr} Let $\{v,v'\}\in E_{2t+1,n}$ be an edge as above. Assume for the sake of contradiction that $A$ does not produce a valid colouring, i.e. $A(v)=A(v')$. We now construct a ring $R$ that is a valid input for the algorithm.
 
 Consider the ring 
 
@@ -49,7 +49,7 @@ Consider the ring
 
 %picture ring with vertices x_1... x_t+1 x_t+2 ... x_2t+1,x_2t+2
 
-Since the algorithm produces a valid colouring it colours $x_{t+1}$ and $x_{t+2}$ with different colours, hence it assign different colours to the overlapping neighbourhoods $v$ and $v'$ which is a contradiction to the assumption.
+Since the algorithm $A$ produces a valid colouring for the ring, it colours $x_{t+1}$ and $x_{t+2}$ with different colours, hence it assign different colours to the overlapping neighbourhoods $v$ and $v'$ which is a contradiction to the assumption, as there might be collisions between $A$ producing valid coloring for $R$ and an invalid coloring (by assumption) for $G(2t+1, n)$.
 \end{pr}
 
 It follows that $\chi(G_{2t+1,n})\leq 3$ if $A$ exists. We now show that the chromatic number is actually larger, if $t$ is too small. To show a lower bound for the chromatic number of $G_{2t+1,n}$ we will take a subgraph that can be nicely characterised recursively and show a lower bound for it. For this need line graphs:
@@ -172,7 +172,7 @@ Note that a maximum set and a maximal set can be very different, see figure \ref
 
 Finding a maximum independent set is NP-complete, it is even inapproximable by a factor of $\approx \sqrt{n}$ unless P=NP. However, maximal independent sets can be computed greedily. We want to find a distributed algorithm for this problem.
 
-There is a relation between colouring and MIS. Each colour class in a coloured graph is an independent set, since there musn't be edges between nodes of the same colour. It may not be maximal, but we can construct one in a distributed fashion by parallely adding vertices of other colours greedily.
+There is a relation between colouring and MIS. Each colour class in a coloured graph is an independent set, since there mustn't be edges between nodes of the same colour. It may not be maximal, but we can construct one in a distributed fashion by parallely adding vertices of other colours greedily.
 
 \begin{thm} Given a synchronous distributed algorithm that colours a graph in $R$ rounds with $C$ colours, then we can find a MIS in time $O(R+C)$\qed\end{thm}
 

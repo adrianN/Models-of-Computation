@@ -48,7 +48,7 @@ forward the message to all other neighbours
 \label{alg:flood}
 \end{figure}
 
-\begin{thm} Algorithm \ref{alg:flood} informs all vertices. It has time complexity O($D$) and communication complexity\footnote{the number of messages sent} O($m$)
+\begin{thm} Flood informs all vertices. It has time complexity O($D$) and communication complexity\footnote{the number of messages sent} O($m$)
 \end{thm}
 
 \begin{pr} The correctness is proved by induction. After $i$ units of time, all vertices at distance $\leq i$ from the root are informed. The vertices at distance $i+1$ have neighbours at distance $i$ that forward them the message.
@@ -64,6 +64,6 @@ But is $T$ a BFS-tree? This depends on the model of computation. In a synchronou
 
 \subsection{BFS-trees in Asynchronous Settings}
 
-There are several approaches to the problem. One solution works in phases: in phase $p$ all nodes at distance $p$ are included in the tree (exactly as in the synchronous setting). The phases are synchronised by the root. At the end of the phase all nodes send a message to the root and the root sends the "ok" back to start a new phase. The overhead for the synchronisation is $2p$ after phase $p$. Since $p\leq D$ (actually $\leq R$) we get a time complexity of $O(D^2)$ in total. The message complexity is O($m+nD$).
+There are several approaches to the problem. One solution works in phases: in phase $p$ all nodes at distance $p$ are included in the tree (exactly as in the synchronous setting). The phases are synchronised by the root. At the end of the phase all nodes send a message to the root and the root sends the "ok" back to start a new phase. The overhead for the synchronization is $2p$ after phase $p$. Since $p\leq D$ (actually $\leq R$) we get a time complexity of $O(D^2)$ in total. The message complexity is O($m+nD$).
 
 This synchronization method is useful in other settings too.

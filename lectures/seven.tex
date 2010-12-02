@@ -21,7 +21,7 @@ We want to send messages along "short" paths in this graph. We assume that the a
 \begin{thm}\label{thm:small_world_graphs} Let $l,f\geq 1$ and let $0\leq \alpha \leq 2$. There is a constant $c=c(l,f,a) > 0$ such that if D denotes the diameter of $G_n(l,f,\alpha)$ then $P(D<c\log n) \geq 1-o(1)$
 \end{thm}
 
-Note that if $\alpha \geq 2$ the statement becomes false (the diameter becomes $n^\epsilon$ with $\epsilon > 0$). The next statement concerns finding such paths.
+Note that if $\alpha > 2$ the statement becomes false (the diameter becomes $n^\epsilon$ with $\epsilon > 0$). The next statement concerns finding such paths.
 
 \begin{thm}\label{thm:finding_short_paths} \mbox{}\begin{enumerate}
 \item Let $l=f=1$, $\alpha =2$. Then there is a decentralised algorithm $A$ with expected delivery time $O(\log^2n)$

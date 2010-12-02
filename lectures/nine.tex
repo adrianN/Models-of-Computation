@@ -21,22 +21,28 @@ There must be an angle that is less or equal to the average $\leq \pi/3$. Let $\
 
 \[\sin \phi_a / d(b_i,b_{i+1}) = \sin \phi_i / d(a,b_{i+1})\]
 
-Since $\phi_a \leq \pi/3 \Rightarrow \sin \phi_a \leq \sqrt{3}/2$. We need $\phi_i\leq 2\pi/3$ and we get
+We show $\sin(\phi_i) \geq \sin(\phi_alpha)$. There are two cases. If $\phi_i \leq \pi/2$ we have
 
-\[\frac{\sqrt{3}}2 \cdot 1\frac{1}{d(b_i,b_{i+1})} \geq \frac{\sin \phi_a}{d(b_i,b_{i+1})} = \frac{\sin \phi_i}{d(a,b_{i+1})} \geq \frac{\sqrt 3}{2} \cdot \frac{1}{d(a,b_{i+1})}\]
+\[\sin(\phi_i9 \geq \sin(\phi_\alpha) && \text{as } \pi/2\geq \phi_i\geq \phi_\alpha\]
 
-And hence $d(a,b_{i+1})\geq d(b_i,b_{i+1})$
+if on the other hand $\phi_i > \pi/2$ we use $\phi_i < \pi -\phi_alpha$. This holds because of the angle sum in triangles. Thus
+
+\[\sin(\phi_i) > \sin(\pi -\phi_\alpha)\]
+
+because $\sin$ is decreasing in that interval. As $\sin(\pi - \phi_\alpha) = \sin(\phi_\alpha)$, we got that $\sin(\phi_i) > \sin(\phi_alpha)$
+
+Thus from here and from law of sines we get that $d(\alpha, b_i) >= d(\alpha, b_{i+1})$, where equality holds only if we have $\phi_i = \phi_alpha = \pi/3$.
 \end{pr}
 
 \begin{thm} Every 3-connected planar graph has a greedy embedding. \qed\end{thm}
 
-The theorem is as good as it can be, since we know $K_{2,11}$ (2-connected) and $K_{3,16}$ (3-conn, not planar) have no embedding.
+The theorem is as good as it can be, since we know $K_{2,11}$ (2-connected) and $K_{3,16}$ (3-connected, not planar) have no embedding.
 
 This is however not useful, since the networks we're considering don't have that property.
 
 \subsection{Greedy routing in normed spaces}
 
-Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a different difference metrik. A norm needs to have these properties
+Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a different difference metric. A norm needs to have these properties
 
 \begin{enumerate}
 \item $\norm{0} = 0$, $v\neq 0 \Rightarrow \norm{v} >0$
@@ -53,7 +59,7 @@ With the norm it is easy to define the distance as the length of the vector betw
 
 \begin{pr} Consider a star with a central vertex $u$ and $N-1$ vertices around it. Let $f$ be a greedy embedding that maps $u$ to $0$. Let $x_i=f(u_i)$, $l_i=\norm{x_i}$ and $w_i = x_i/l_i$.
 
-Claim: $\norm{w_i-w_j} \geq 1$ if $i\neq j$. Assume otherwise. Consider $d(x_i,x_j)=\norm{x_i,x_j}$.
+Claim: $\norm{w_i-w_j} \geq 1$ if $i\neq j$. Assume otherwise. Consider $d(x_i,x_j)=\norm{x_i-x_j}$.
 
 \begin{align*}
 d(x_i,x_j)&=\norm{x_i,x_j} \\
@@ -69,7 +75,7 @@ So the distance between $u_i$ and $u_j$ is strictly smaller than the distance be
 
 Hence balls of radius $1/2$ around each $u_i$ is empty and the ball of radius $3/2$ around $u$ contains $N-1$ smaller balls.
 
-\[\Vol(B_{3/2}) \geq (N_1)\Vol(B_{1/2})\]
+\[\Vol(B_{3/2}) \geq (N-1)\Vol(B_{1/2})\]
 
 In normed spaces $\Vol(B_r) = r^n \Vol(B_1)$. We get
 

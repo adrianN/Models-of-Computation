@@ -25,7 +25,7 @@ that counts the edges that are incident to $v'$ and let $Y=\sum_{v,v'} Y_{v\righ
 	&= |E(G)|
 \end{align*}
 
-Let us now consider the relationship between $Y$ and $X_i$. Consider an edge $e={v,v'}$ as in figure \ref{fig:at_least_half} that is removed. $e$ gets counted in $Y$ if $E_{x\rightarrow v'}$ or if $E_{y\rightarrow v}$ happened. So each deleted edge gets counted up to two times. It can not happen that for example $E_{x'->v'}$ happens simultaneously with $E_{x\rightarrow v'}$, because we requested to have the minimal random value. Hence $X_i \geq Y/2$.
+Let us now consider the relationship between $Y$ and $X_i$. Consider an edge $e={v,v'}$ as in figure \ref{fig:at_least_half} that is removed. $e$ gets counted in $Y$ if $E_{x\rightarrow v'}$ or if $E_{y\rightarrow v}$ happened. So each deleted edge gets counted up to two times. It can not happen that for example $E_{x'->v'}$ happens simultaneously with $E_{x\rightarrow v'}$, because we requested $x$ to be the minimal random value among all neighbours. Hence $X_i \geq Y/2$.
 
 \begin{figure}
 \begin{center}
@@ -47,19 +47,19 @@ Lemma \ref{lem:at_least_half} alone is not sufficient to prove the logarithmic r
 We apply the law of total expectation\footnote{I think that's what it's called} and the previous lemma:
 
 \begin{align*}
-\E(|E_i|) &= \sum_{G\subseteq G_1} P(G_{i_1} =G) \cdot \E(|E_i| | G_{i-1}=G)\\
-	&=\sum_{G\subseteq G_1}  P(G_{i_1} =G) \cdot \E(|E_{i-1}| -X_{i-1} | G_{i-1}=G)\\
-	&=\sum_{G\subseteq G_1}  P(G_{i_1} =G) \cdot (\E(|E_{i-1}| | G_{i-1}=G) - \E( -X_{i-1} | G_{i-1}=G))\\
-	&=\sum_{G\subseteq G_1}  P(G_{i_1} =G) \cdot (|E(G)| - \E(X_{i-1} | G_{i-1}=G))\\
-	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{=} \sum_{G\subseteq G_1}  P(G_{i_1} =G) \cdot (|E(G)| - \frac{E(G)}{2})\\
-	&=\frac 12 \sum_{G\subseteq G_1}  P(G_{i_1} =G) \cdot |E(G)|\\
+\E(|E_i|) &= \sum_{G\subseteq G_1} P(G_{i-1} =G) \cdot \E(|E_i| | G_{i-1}=G)\\
+	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot \E(|E_{i-1}| -X_{i-1} | G_{i-1}=G)\\
+	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (\E(|E_{i-1}| | G_{i-1}=G) - \E( -X_{i-1} | G_{i-1}=G))\\
+	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (|E(G)| - \E(X_{i-1} | G_{i-1}=G))\\
+	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{=} \sum_{G\subseteq G-1}  P(G_{i_1} =G) \cdot (|E(G)| - \frac{|E(G)|}{2})\\
+	&=\frac 12 \sum_{G\subseteq G-1}  P(G_{i_1} =G) \cdot |E(G)|\\
 	&=\frac 12 \E(|E_{i-1}|)\\
 \end{align*}
 
 By induction we get the bound claimed in the lemma.
 \end{pr}
 
-\begin{lem} Let T be the number of rounds until algorithm \ref{alg:fast_mis} terminates. Then $\E(T) \leq 2\log n+O(1)$\end{lem}
+\begin{lem} Let T be the number of rounds until Fast-MIS terminates. Then $\E(T) \leq 2\log n+O(1)$\end{lem}
 
 \begin{pr} We have
 
@@ -151,7 +151,7 @@ if $v_i\in $ MIS, then
 \label{alg:general_colouring}
 \end{figure}
 
-\begin{thm} Algorithm \ref{alg:general_colouring}finds a valid colouring with $\leq \Delta+1$ colours in expected time $O(\log n)$.\end{thm}
+\begin{thm} Algorithm \ref{alg:general_colouring} finds a valid colouring with $\leq \Delta+1$ colours in expected time $O(\log n)$.\end{thm}
 
 \begin{pr} Observations:
 

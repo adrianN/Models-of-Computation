@@ -30,7 +30,7 @@ There are less than $2n$ such pairs, so we get a total contribution of $\leq \fr
 
 \begin{align*}
 \E(X_uX_v)-\E(X_u)\E(X_v) &= 1-2(1-\frac{2}{n-1})^S+(1-\frac{4}{n-1})^S-(1-2(1-\frac{2}{n-1})^S +(1-\frac{2}{n-1})^{2S})\\
-&= (1-\frac{4}{n-1})^S - (1-Sfrac{2}{n-1})^{2s}\\
+&= (1-\frac{4}{n-1})^S - (1-\frac{2}{n-1})^{2s}\\
 &= (1-\frac{4}{n-1})^S-(1-\frac{4}{n-1}+\frac{4}{(n-1)^2})^S\\
 \end{align*}
 
@@ -68,7 +68,7 @@ P(Y>0) &\leq \E(Y) \\
 This completes the proof for the diameter.
 \end{pr}
 
-\begin{pr}[Theorem \ref{thm:finding_short_paths}] For this proof we assume $\alpha=2,l=f=1$. Let $A$ be the current message holder. $A$ passes the message on to that neighbour that is closest to the target (by Manhattan distance). We want to show that the expected travel time of the message is $O(\log^2n)$.
+\begin{pr}[Theorem \ref{thm:finding_short_paths}] For this part of the proof we assume $\alpha=2,l=f=1$. Let $A$ be the current message holder. $A$ passes the message on to that neighbour that is closest to the target (by Manhattan distance). We want to show that the expected travel time of the message is $O(\log^2n)$.
 
 Recall that 
 
@@ -77,7 +77,7 @@ Recall that
 Let's try to estimate $\sum_{w\neq u}d(u,w)^{-2}$. Let $N_d(u) = |\{w|d(u,w)=d\}|$. Observe:
 
 \begin{align*}
-\sum_{w\neq u}d(u,w)^{-2} &= \sum_{d=1}^{\sqrt n} d^2\cdot N_d(u)\\
+\sum_{w\neq u}d(u,w)^{-2} &= \sum_{d=1}^{\sqrt n} d^{-2}\cdot N_d(u)\\
 \intertext{Note: $d\leq |N_d(u)|\leq 4d$ (draw a picture). The lower bound holds for $d\leq (\sqrt n) /2$}
 	&\leq \sum_{d=1}^{2\sqrt n} 4 d^{-1}\\
 	&\leq 4 \ln(2\sqrt{n})
@@ -135,7 +135,7 @@ Take the two vertices $(u,v)$ of the grid s.t. the distance between them is maxi
 
 \[E:= \bigcup _{i=1}^{\lambda n\delta} E_i\]
 
-We will show that the probability of the event $E$ ist small. $c_\alpha = \frac{2^{\alpha-3}}{2-\alpha}$
+We will show that the probability of the event $E$ is small. $c_\alpha = \frac{2^{\alpha-3}}{2-\alpha}$
 
 \begin{align*}
 P(E_i) &\leq |U| \cdot 2fc_\alpha^{-1} \cdot n^{-\frac{2-\alpha}{2}}\\

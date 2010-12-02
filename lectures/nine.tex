@@ -21,17 +21,17 @@ There must be an angle that is less or equal to the average $\leq \pi/3$. Let $\
 
 \[\sin \phi_a / d(b_i,b_{i+1}) = \sin \phi_i / d(a,b_{i+1})\]
 
-We show $\sin(\phi_i) \geq \sin(\phi_alpha)$. There are two cases. If $\phi_i \leq \pi/2$ we have
+We show $\sin(\phi_i) \geq \sin(\phi_\alpha)$. There are two cases. If $\phi_i \leq \pi/2$ we have
 
-\[\sin(\phi_i9 \geq \sin(\phi_\alpha) \qquad \text{as } \pi/2\geq \phi_i\geq \phi_\alpha\]
+\[\sin(\phi_i) \geq \sin(\phi_\alpha) \qquad \text{as } \pi/2\geq \phi_i\geq \phi_\alpha\]
 
-if on the other hand $\phi_i > \pi/2$ we use $\phi_i < \pi -\phi_alpha$. This holds because of the angle sum in triangles. Thus
+if on the other hand $\phi_i > \pi/2$ we use $\phi_i < \pi -\phi_\alpha$. This holds because of the angle sum in triangles. Thus
 
 \[\sin(\phi_i) > \sin(\pi -\phi_\alpha)\]
 
-because $\sin$ is decreasing in that interval. As $\sin(\pi - \phi_\alpha) = \sin(\phi_\alpha)$, we got that $\sin(\phi_i) > \sin(\phi_alpha)$
+because $\sin$ is decreasing in that interval. As $\sin(\pi - \phi_\alpha) = \sin(\phi_\alpha)$, we got that $\sin(\phi_i) > \sin(\phi_\alpha)$
 
-Thus from here and from law of sines we get that $d(\alpha, b_i) >= d(\alpha, b_{i+1})$, where equality holds only if we have $\phi_i = \phi_alpha = \pi/3$.
+Thus from here and from law of sines we get that $d(\alpha, b_{i+1}) \ge d(b_i, b_{i+1})$, where equality holds only if we have $\phi_i = \phi_\alpha = \pi/3$.
 \end{pr}
 
 \begin{thm} Every 3-connected planar graph has a greedy embedding. \qed\end{thm}
@@ -62,7 +62,7 @@ With the norm it is easy to define the distance as the length of the vector betw
 Claim: $\norm{w_i-w_j} \geq 1$ if $i\neq j$. Assume otherwise. Consider $d(x_i,x_j)=\norm{x_i-x_j}$.
 
 \begin{align*}
-d(x_i,x_j)&=\norm{x_i,x_j} \\
+d(x_i,x_j)&=\norm{x_i - x_j} \\
 	&=\norm{l_iw_i - l_jw_j}\\
 	&=\norm{l_i(w_i-w_j) -(l_j-l_i)w_j}\\
   &\leq l_i \norm{w_i-w_j} + |l_j-l_i|\cdot \norm{w_j} && (l_i\leq l_j)\\
@@ -79,7 +79,7 @@ Hence balls of radius $1/2$ around each $u_i$ is empty and the ball of radius $3
 
 In normed spaces $\Vol(B_r) = r^n \Vol(B_1)$. We get
 
-\[\frac 32 \Vol(B_1) \geq (N-1)(\frac 12^n \cdot \Vol(B_1)\]
+\[\frac{3}{2}^n \Vol(B_1) \geq (N-1)(\frac{1}{2}^n \cdot \Vol(B_1)\]
 
 And thus $3^n\geq N-1$
 \end{pr}

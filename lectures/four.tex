@@ -51,8 +51,8 @@ We apply the law of total expectation\footnote{I think that's what it's called} 
 	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot \E(|E_{i-1}| -X_{i-1} | G_{i-1}=G)\\
 	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (\E(|E_{i-1}| | G_{i-1}=G) - \E( -X_{i-1} | G_{i-1}=G))\\
 	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (|E(G)| - \E(X_{i-1} | G_{i-1}=G))\\
-	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{=} \sum_{G\subseteq G-1}  P(G_{i_1} =G) \cdot (|E(G)| - \frac{|E(G)|}{2})\\
-	&=\frac 12 \sum_{G\subseteq G-1}  P(G_{i_1} =G) \cdot |E(G)|\\
+	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{=} \sum_{G\subseteq G-1}  P(G_{i-1} =G) \cdot (|E(G)| - \frac{|E(G)|}{2})\\
+	&=\frac 12 \sum_{G\subseteq G-1}  P(G_{i-1} =G) \cdot |E(G)|\\
 	&=\frac 12 \E(|E_{i-1}|)\\
 \end{align*}
 

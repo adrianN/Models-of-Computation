@@ -172,7 +172,7 @@ Note that a maximum set and a maximal set can be very different, see figure \ref
 
 Finding a maximum independent set is NP-complete, it is even inapproximable by a factor of $\approx \sqrt{n}$ unless P=NP. However, maximal independent sets can be computed greedily. We want to find a distributed algorithm for this problem.
 
-There is a relation between colouring and MIS. Each colour class in a coloured graph is an independent set, since there mustn't be edges between nodes of the same colour. It may not be maximal, but we can construct one in a distributed fashion by parallely adding vertices of other colours greedily.
+There is a relation between colouring and MIS. Each colour class in a coloured graph is an independent set, since there mustn't be edges between nodes of the same colour. It may not be maximal, but we can construct one in a distributed fashion by parallelly adding vertices of other colours greedily.
 
 \begin{thm} Given a synchronous distributed algorithm that colours a graph in $R$ rounds with $C$ colours, then we can find a MIS in time $O(R+C)$\qed\end{thm}
 

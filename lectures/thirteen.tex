@@ -60,3 +60,17 @@ and the depth
 \[D=O(\log n) +O(\underbrace{\max_{i=1\ldots 2k} (X_i+Y_i)}_{\leq n/k})\]
 
 We need to think about a good value for $k$ to get a good runtime. Obviously $k= n/\log n$ is a good choice.
+
+\section{Pointer jumping}
+
+Assume we have a rooted tree given as a pointer array (each entry points to its parent, the root points to itself). We want to compute a pointer from each node to the root.
+
+\begin{lstlisting}
+POINT-TO-ROOT
+for $k= 1\ldots \log n$ 
+	for each vertex do in parallel
+		temp[v] = P[P[v]]
+		P[v] = temp[v]
+\end{lstlisting}
+
+\begin{thm} Point to root is correct and has a depth of $\log n$\end{thm}

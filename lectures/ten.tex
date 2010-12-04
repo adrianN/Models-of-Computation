@@ -24,7 +24,7 @@ It is fairly obvious that this isometric. We have several cases. If two nodes ar
 In the mapping we have
 
 \begin{align*}
-\norm{f(v)-f(w)}_{\infty} & \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
+\norm{f(v)-f(w)}_{\infty} &= \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
 	&\geq |f(v)_d-f(w)_d|\\
 	&= |d_t(v,c)+d_T(w,c)|\\
 	&=d_T(v,w)
@@ -37,11 +37,11 @@ and since $c$ was mapped to $0$ and the embedding in constructed inductively, ve
 	&=d_T(v,w)
 \end{align*}	
 
-In another case $v,w\L$. There are again several cases. It can happen that $v,w$ are on a path to $c$. Then
+In another case $v,w \in L$. There are again several cases. It can happen that $v,w$ are on the same path to $c$. Then
 
 \[d_T(w,v) = | d_T(w,c)-d_T(v,c)|\]
 
-if they are different paths, but the paths are not edge disjoint we have
+if they are on different paths, but the paths are not edge disjoint we have
 
 \[d_T(v,w) \geq |d_T(v,c) - d_T(w,c)|\] 
 
@@ -63,7 +63,7 @@ It is obviously not possible to do an isometric embedding for general graphs. Ho
 \end{thm}
 
 \begin{pr}
-Let $H\subset G$, $V(H) = V(G), E(H) \subset E(G)$ with $H$ connected. Any greedy embedding for $H$. Any greedy embedding for $H$ is also one for $G$. 
+Let $H\subseteq G$, $V(H) = V(G), E(H) \subseteq E(G)$ with $H$ connected. Any greedy embedding for $H$ is also one for $G$. 
 \end{pr}
 
 Now we how that an embedding exists. We need to show how to find it efficiently.
@@ -83,7 +83,7 @@ By using this construction we can greedily embed the graph in logarithmically ma
 
 Many real-world networks change rather fast. In P2P networks or mobile networks clients appear and disappear and the topology of the network changes over time.
 
-Let's define a dynamic graph as a graph whose vertices don't change, but whose edge set is a function from time to sets of pairs of vertices. Of course if the edges are chosen maliciousy we can't compute anything meaningful.
+Let's define a dynamic graph as a graph whose vertices don't change, but whose edge set is a function from time to sets of pairs of vertices. Of course if the edges are chosen maliciously we can't compute anything meaningful.
 
 \begin{Def} A dynamic graph is $T$-interval connected, if the (static) graph
 
@@ -92,40 +92,38 @@ Let's define a dynamic graph as a graph whose vertices don't change, but whose e
 is connected for all $r\geq 0$.
 \end{Def}
 
-If the graph is connected in each timestep it is $T-1$ connected. If a graph is $T-2$ connected the intersection must always contain a spanning tree. Hence $T-\infty$ connected graphs have one spanning tree that is always there.
+If the graph is connected in each timestep it is 1-interval connected. If a graph is 2-interval connected the intersection must always contain a spanning tree. Hence $\infty$-interval connected graphs have one spanning tree that is always there.
 
 We use asynchronous broadcast for communication:
 \begin{enumerate}
-\item each node decides what it wants to breacast
+\item each node decides what it wants to broadcast
 \item independently, without knowledge about the choices, an adversary chooses the edgeset.
 \item the nodes transmit on the new graph
 \item local computations take place
 \end{enumerate}
 
-Initially one a few nodes wake up (asynchronous start). Nodes have IDs and some local data.
+Nodes have IDs and some local data. \\
+Initially either only a few nodes wake up (asynchronous start), or all nodes wake up (synchronous start). 
 
 \subsection{Problems}
 
 It is already difficult to find the number of vertices in the graph. A slightly simpler problem is to verify that there are at most $k$ vertices in the graph (s.t. the information is present at each node).
 
-Another, more general, problem is called k-token dissemination. Here we have a finite set $S$ and a fuction $I:V\rightarrow \mathcal{P}(S)$. We want to find out if 
+Another, more general, problem is called k-token dissemination. Here we have a finite set $S$ and a function $I:V\rightarrow \mathcal{P}(S)$. We want to find out if 
 
 \[|\bigcup_{v\in V} I(v)| = k\]
 
-The last problem we will consider is k-comitee election: Nodes want to partition themselves in groups s.t. the size of each group is smaller than $k$ and  if $k\geq n$ there is only one group.
+The last problem we will consider is k-committee election: nodes want to partition themselves in groups s.t. the size of each group is smaller than $k$ and  if $k\geq n$ there is only one group.
 
 \subsection{Basic Information Dissemination}
 
 We want to find an algorithm that broadcasts a message to all nodes in the graph.
 
-\begin{thm} Assume that there is a single token in network, initially placed at an arbitrary vertex. Once a node gets the token it starts broadcasting it to all of its current neighbours in each round. In an $T-1$ connected graph, after $r\leq n-1$ rounds, at least $r+1$ nodes have the token.\end{thm}
+\begin{thm} Assume that there is a single token in network, initially placed at an arbitrary vertex. Once a node gets the token it starts broadcasting it to all of its current neighbours in each round. In an 1-interval connected graph, after $r\leq n-1$ rounds, at least $r+1$ nodes have the token.\end{thm}
 
-\begin{pr} Let $T(r)$ be the set of nodes that have tho token. We show $T(r) \geq \min\{r+1,n\}$. Initially everything is fine. We proceed by induction.
+\begin{pr} Let $T(r)$ be the set of nodes that have the token. We show $T(r) \geq \min\{r+1,n\}$. Initially everything is fine. We proceed by induction.
 
-Since the graph is connected in each round, there must be at least one edge from $T(r)$ to $V\backslash T(r)$, so the size of $T$ increases by at least one.
+Since the graph is connected in each round, there must be at least one edge from $T(r)$ to $V\backslash T(r)$, so the size of $T(r)$ increases by at least one.
 \end{pr}
 
 To get a stopping criterion it would be useful to know $n$.
-
-\begin{thm} Counting is impossible in $T-1$ connected graphs with asynchronous start.
-\end{thm}

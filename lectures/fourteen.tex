@@ -1,0 +1,61 @@
+\subsection{Prefix sum in lists}
+We have a linked list as an array of predecessors $P$ and an array of values $A$ and want to compute the prefix sum as an array $V$.
+
+\begin{lstlisting}
+PREFIX-SUM-LIST
+	V:=A
+	for $k=1\ldots \log n$ do
+		for i = $1\ldots n$ do in parallel
+			if P[i] $\neq$ nil then
+				V[i] = V[i] + V[P[i]]
+				P[i] = P[P[i]]
+\end{lstlisting}
+
+\begin{thm} Prefix-Sum-List is correct and has a depth of $O(\log n)$ and a work of $O(n\log n)$\end{thm}
+
+\begin{pr}After $k$ iterations we have
+\begin{itemize}
+\item each vertex points to the unique vertex $u^*$ at distance $2^k$ or nil.
+\item for each vertex $i$, $V[i]$ is the sum of all values from vertex $i$ to $u^*+1$ (nil + 1 = 0). 
+\end{itemize}
+
+The invariant holds for $k=0$ by initialisation. In the step from $x-1$ to $k$ the distance of the vertex we're pointing at doubles (unless it has reached the start of the list). The addition of $V[i]$ and $V[P[i]]$ gives us the sum from the necessary vertices.
+\end{pr}
+
+Besides this pointer-jumping technique we can use a different approach that only uses linear work and has still logarithmic length.
+
+We adapt the previous idea for the array to work with lists. Since we can't distinguish in parallel whether a vertex is in an even or an odd position, we use randomness for the contraction step. We randomly choose some vertices and shortcut by adjusting their neighbours' pointers. Then we recurse and reexpand the list.
+
+We flip a coin for each vertex and shortcut $v$ iff $v$ has heads and its predecessor has tails. Then the expected number of elements we shortcut is $1/4n$
+
+\section{Graph Algorithms}
+
+\subsection{Connected Components}
+
+We're given a graph $G$ as a vertex array $V$ and an edge array $E$. We want to find an array of components $C$ s.t. for any $u,v\in V$ $C[u] = C[v]$ iff $u$ and $v$ are in one connected components. The idea is to contract edges until each component is represented by one node. We will use a Concurrent Read Concurrent Write PRAM.
+
+When we contract stars the label of the new component is the center of the star. We use randomization to decide which parts of the graph are stars. Each vertex is either parent or child with probality $1/2$. Children try to connect to adjacent parents (there may be more than one). We call contractible edges "hooks".
+
+\begin{lstlisting}
+CONTRACT-STAR(V,E)
+	if |E|=0 return V
+	for $v\in V$ do in parallel
+		R[u] = random {p,c}
+	H = {[u,v] | R[u] = c $\wedge $ R[v]=p} //mark and pack
+	for $v\in V$ do in parallel
+		P[v] = v
+	for $[u,v]\in H$ do in parallel
+		P[u] = v //concurrent writes
+	V' = {v | P[v] = v} //mark and pack
+	E' = {[P[u],P[v]] | [u,v] $\in $ E, P[u] $\neq$ P[v]}
+	C' = CONTRACT-STAR(V',E')
+	for $v\in V$ do in parallel
+		C[v] = C'[P[v]]
+	return C	
+\end{lstlisting}
+
+The edge set $E'$ may contain repetitions, i.e. parallel edges.
+
+To find the depth of this algorithm we need to consider the expected number of non-isolated vertices in $V'$. The probability that a vertex is hooked up is at least $1/4$, so the number of non-isolated vertices is decreased by a constant factor in each recursive step. Hence we get a logarithmic depth (with high probability).
+
+Since mark-and-pack has logarithmic depth (we need to compute prefix sums), we get a total depth of $O(\log^2 n)$. The work is obviously $O((m+n)\cdot \log n)$. There are fancy algorithms that use $W=O(m+n), D=O(\log n)$ on EREW PRAM (Zick 1994).

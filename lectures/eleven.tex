@@ -15,7 +15,7 @@ We show that the algorithm behaves the same on both graphs for the vertices $0,1
 
 $n-1$ broadcasts to $n-2$ and $n$, but $n$ get's moved away to the end of $B$ after the round.
 
-Since $n+t(n)$ is still sleeping at the end of the algorithm, no vertex in $A$ has ever received a message from a vertex in B. Hence the algorithm must run on $A$ just as if $B$ did not exist.
+Since vertex $n+t(n)$ is still sleeping at the end of the algorithm, no vertex in $A$ has ever received a message from a vertex in B. Hence the algorithm must run on $A$ just as if $B$ did not exist.
 \end{pr}
 
 With synchronous starts we can count:
@@ -31,41 +31,41 @@ Each vertex v:
 	output $|A_v|$
 \end{lstlisting}
 
-\begin{lem} Assume that $G$ is $T-1$ connected and we have synchronous start at time $0$. For all $r<n$ and for all $v\in V$:
+\begin{lem} Assume that $G$ is 1-interval connected and we have synchronous start at time $0$. For all $r<n$ and for all $v\in V$:
 \[|A_v(r)| \geq r+1\]
 \end{lem}
 
-\begin{pr} Induction over $r$. Intially everything is ok. $r\rightarrow r+1, r<n-1$. Let $A'_v(r+1)$ be the set of IDs know to $v$ if we startd at time $1$ instead of time 0. The induction hypothesis implies that $A'_v(r+1)\geq r+1$ (note: this is equal to $A_v(r)$). If $|A_v'(r+1)|\geq 2$ we are done. Otherwise $|A_v'(r+1)|=r+1$. 
+\begin{pr} Induction over $r$. Intially everything is ok. $r\rightarrow r+1, r<n-1$. Let $A'_v(r+1)$ be the set of IDs known to $v$ if we would start at time $1$ instead of time 0. The induction hypothesis implies that $|A'_v(r+1)|\geq r+1$ (note: this is equal to $A_v(r)$). If $|A_v'(r+1)|\geq r+2$ we are done. Otherwise $|A_v'(r+1)|=r+1$. 
 
 $A_v(r+1)$ is the set of IDs known to all vertices in $A'(r+1)$ at round 1.
 
 \[A_v(r+1)=\bigcup_{u\in A_v'(r+1)} A_u(1)\]
 
-$|A_v(r+1)|\geq A'_v(r+1)+1$, since in the first some IDs have been exchanged.
+$|A_v(r+1)|\geq |A'_v(r+1)|+1$, since in the first some IDs have been exchanged.
 \end{pr}
 
 \subsection{Small Messages}
 
-Until now we didn't restrict the size of the messages. What happens if we restrict ourselves to $O(\log n)$ bits per message. Can we still count?
+Until now we didn't restrict the size of the messages. What happens if we restrict ourselves to $O(\log n)$ bits per message? Can we still count?
 
 Suppose that the vertices are in a state which is a solution to the k-committee problem. If $k\geq n$ there is only one committee. We can use this to count the number of nodes:
 
 \begin{lstlisting}
 Each node v:
 	$x_v$=1
-for $k$ rounds
-	If ($x_v=1$) send committee ID
-	else send $\bot$
-	If different committee ID or $\bot$
-		$x_v$=0
+	for $k$ rounds
+		If ($x_v=1$) send committee ID
+		else send $\bot$
+		If different committee ID or $\bot$
+			$x_v$=0
 \end{lstlisting}
 
-\begin{lem} If $G$ is $T-1$ connected, then at the end of verify(K) each node outputs 1, iff $k\geq n$\end{lem}
-\begin{pr} If $k\geq n$ we know that all vertices are in the same committee, and all vertices broadcast the same ID. It is impossible for a node to switch to $0$. If $k<n$ there are at least $i$ nodes in each committeee where $x=0$. Let $C = C_1 \dot \cup C_2$ be any committee, where $\forall v\in C_0: x_v=0$. Consider a cut in the graph that separates $C_1$ from $C_0$ and $V\backslash C$. There must be at least one edge over the cut. Over that edge either a different ID, or $\bot$ will be send and the number of nodes with $x=0$ increases.
+\begin{lem} If $G$ is 1-interval connected, then at the end of verify(K) each node outputs 1, iff $k\geq n$\end{lem}
+\begin{pr} If $k\geq n$ we know that all vertices are in the same committee, and all vertices broadcast the same ID. It is impossible for a node to switch to $0$. If $k<n$ there are at least $i$ nodes in each committee where $x=0$. Let $C = C_1 \dot \cup C_2$ be any committee, where $\forall v\in C_0: x_v=0$. Consider a cut in the graph that separates $C_1$ from $C_0$ and $V\backslash C$. There must be at least one edge over the cut. Over that edge either a different ID, or $\bot$ will be send and the number of nodes with $x=0$ increases.
 \end{pr}
 
 So by doing successive doubling of $k$ we can find $n$.
 
-\begin{thm} A solution to the k-committee selection problem can be computed in time O($k^2$) with logarithmically sized messages on a $T-1$ connected graph with synchronous start\end{thm}
+\begin{thm} A solution to the k-committee selection problem can be computed in time O($k^2$) with logarithmically sized messages on a 1-interval connected graph with synchronous start\end{thm}
 
 \paragraph{Sketch.} We do $k$ times: polling and for k rounds: selection. In the polling phase we collect IDs from their neighbours and forward the smallest known ID. (because of the bound on the message size not all IDs can be forwarded.). In the selection phase the vertex with the minimum ID is invited into the committee (by each node that knows this ID as the min. ID	).

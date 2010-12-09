@@ -1,0 +1,64 @@
+We can improve the depth of this algorithm by modifying the mark and pack steps. We don't need to pack anymore, as that took logarithmic depth ("mark and don't pack"). Instead we do ...
+
+The asymptotic work stays the same.
+
+An alternative algorithm works as follows:
+
+\begin{lstlisting}
+CONTRACT-TREE(V,E)
+	if |E|=0 return V
+	for $v\in V$ do in parallel
+		R[u] = random {p,c}
+	//hooks form a tree
+	H = {[u,v] | u>v} //mark and pack
+	for $v\in V$ do in parallel
+		P[v] = v
+	for $[u,v]\in H$ do in parallel
+		P[u] = v //concurrent writes
+	
+	P = POINT-TO-ROOT(P)	
+	
+	V' = {v | P[v] = v} //mark and pack
+	E' = {[P[u],P[v]] | [u,v] $\in $ E, P[u] $\neq$ P[v]}
+	C' = CONTRACT-STAR(V',E')
+	for $v\in V$ do in parallel
+		C[v] = C'[P[v]]
+	return C	
+\end{lstlisting}
+
+Instead of contracting stars we construct a tree and start contracting edges in the tree. Since we don't contract stars anymore, we need to do some more work to get pointers to an identifying vertex of the component. Namely we need to get pointers to the root of the tree that we constructed by choosing hooks.
+
+What is the running time of this algorithm? Consider a star where the center node has the highest ID. In this case only one edge is contracted in every recursive step. So we get a linear depth in the worst case. We can improve this by not only constructing $H = \{[u,v] | u>v\}$ but in parallel doing everything with $H = \{[u,v] | u<v\}$ and keeping the result where more edges have been contracted.
+
+We want to show thet the number of non isolated vertices in $V'$ decreases geometrically (as that implies a logarithmic recursion depth). Let $V_0$ be the set of non isolated verices in $V$ and $V_0^+, V_0^-$ be the nodes with a larger (smaller) neighbour. Since $V_0= V_0^+\cup V_0^-$, the smaller one of the two sets must be at least half the size of $V_0$. This is actually a bit better than in the randomized case, where we only had a reduction by one quarter.
+
+We need depth O($\log^2n$) and work O($\log(m+n\log n)$). It is possible to improve this to a depth of O($\log n$)
+
+\subsection{The Euler tour technique}
+
+Given a tree $T$ we want to find a representation of $T$ such that we can quickly compute 
+
+\begin{itemize}
+\item the level of each vertex
+\item the number of nodes in each subtree
+\item the DFS order of the vertices
+\item \ldots
+\end{itemize}
+
+for every possible root $r\in V(T)$. We can already do the first, but only for a fixed root.
+
+To accomplish this we double each edge of the tree and construct a eulerian tour as a doubly linked circular list of edges. This can be computed in two steps from an edge array. First contstruct adjacency lists, then convert the adjacency list into a tour representation.
+
+Assume we have this representation. To set a vertex $r$ as a root, we break the circular list at an arbitrary adjacent edge.
+
+There are two types of edges. Advance edges and Retreat edges. The first occurence of a graph edge in the list is the advance edge, the other orientation of the edge in the list is the retreat edge. We want to classify the edges.
+
+To do that we use the LIST-SUM algorithm to find the position of each edge pos($[u,v]$) and use that to find the first occurence.
+
+We can set pointers to the root by setting P[$v$] = $u$ for each advance edge $[u,v]$. We could then proceed to find the level of each vertex by pointer jumping. 
+
+A DFS order of each vertex can be found as the number of advance edges up to (P[$v$],$v$). Subtract the number of retreat edges and you have the level of $v$.
+
+The number of descendants of a node is the number of advance edges between the advance edge (P[$v$],$v$) and the retreat edge ($v$,P[$v$]).
+
+

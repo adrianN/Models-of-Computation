@@ -22,7 +22,7 @@ PREFIX-SUM-LIST
 The invariant holds for $k=0$ by initialisation. In the step from $x-1$ to $k$ the distance of the vertex we're pointing at doubles (unless it has reached the start of the list). The addition of $V[i]$ and $V[P[i]]$ gives us the sum from the necessary vertices.
 \end{pr}
 
-Besides this pointer-jumping technique we can use a different approach that only uses linear work and has still logarithmic length.
+Besides this pointer-jumping technique we can use a different approach that only uses linear work and has depth O($\log n \cdot \log \log n$).
 
 We adapt the previous idea for the array to work with lists. Since we can't distinguish in parallel whether a vertex is in an even or an odd position, we use randomness for the contraction step. We randomly choose some vertices and shortcut by adjusting their neighbours' pointers. Then we recurse and reexpand the list.
 

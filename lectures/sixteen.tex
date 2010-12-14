@@ -1,0 +1,52 @@
+\subsection{Shortest paths}
+
+Given a weighted graph $G$ and two nodes $u,v$, we want to find the length of the shortest path from $u$ to $v$. The sequential solution (Dijkstra) takes time O($m+n\log n$). There is no known parallel algorithm with D=O($n$) and W=O($n^{2.99}$). Recall, in sequential time O($n^3$) we can solve the APSP with the Floyd-Warshall algorithm. The latter problem has algorithms with D=O($\log^2 n$) and work W=O($n^3\cdot \log n$).
+
+We can use adapted matrix multiplication. Instead of addition we use the minimum and instead of multiplication we use addition.
+
+\[C=A\otimes B\qquad c_{ij} = \min_k \{a_{ik} + b_{kj}\}\]
+
+Let $A$ be the adjacency matrix of $G$, with $0$ on the diagonal, $\infty$ if there is no edge and the weight of the edge if it exists. Using above matrix multiplication, the $k$-th power of $A$ contains the lengths of the shortest paths of length at most $k$, hence $A^{\otimes n}$ contains the lengths of all shortest paths. Easy proof by induction.
+
+Since we can do matrix multiplication in logarithmic depths and work O($\log n$) we have an algorithm in depth D=O($\log ^2 n$) and W=O($n^3\cdot \log n$). Fancy algorithms improve on the work by a polylogarithmic factor (note: smart matrix multiplication algorithms don't work anymore after changing the operations).
+
+We can do better on planar graphs. Since they only have a linear number of edges, the sequential algorithm only takes time O($n \log n$).
+
+\begin{thm}[Cohen 1996] SSSP on planar graphs can be solved in time D=O($\log ^4n$9 and W=O($n^{3/2}$)\end{thm}
+
+That is a big work overhead over the sequential algorithm. We discuss an algorithm that trades depth for better work.
+
+\begin{thm}[Träff, Zaroliagis 2000] SSSP on planar graphs can be solved in D=O($(n^{2\epsilon} + n^{1-\epsilon})\cdot \log n$) and W=O($n^{1+\epsilon} \log n$), for any $0<\epsilon < \frac{1}{2}$\end{thm}
+
+To understand the algorithm we need some preliminaries.
+
+\begin{Def} A separator of a graph $G=(V,E)$ is a subset $S\subseteq V$ such that removing it disconnects the graph.\end{Def}
+
+\begin{thm}[Lipton, Tarjan 1979] Every planar graph has a separator $S$ of size at most O($3\sqrt n$) such that all components of $G[V\backslash S]$ have size at most $\frac 23 n$\end{thm}
+
+When we apply this recursively we decompose the graph into several regions.
+
+\begin{Def}[Region Decomposition] A familiy of sets $(R_i)_{1\leq i\leq t} \subset V$ which satisfy the following properties:
+
+\begin{itemize}
+\item each vertex $v$ is in at least one $R_i$ (if they are in exactly one set they are called interior vertices, otherwise boundary vertices)
+\item there are no edges between interior vertices of different regions
+\end{itemize}
+
+are called a region decomposition of $G$.
+\end{Def}
+
+\begin{Def}[r-division] A decomposition into $\Theta(n/r)$ many regions of size O($r$) each, s.t. each region has O($\sqrt{r}$) many boundary vertices.
+\end{Def}
+
+\begin{thm}[Frederickson 1987] For any $r\leq n$ an $r$-division can be computed in time O($n\log n$). A parallel implementation with D=O($\sqrt n \log n$), W=O($n\log ^2n$) (Träff, Zaroliagis 2000) \end{thm} 
+
+We now have the tools needed to formulate the algorithm. For simplicity we assume that the source is a boundary vertex.
+
+We start be computing an $r$-division with $r=n^{2\epsilon}$. Since shortest paths between interior vertices of different region have to pass through boundary vertices, we start by computing shortest paths between all pairs of boundary vertices of each region in parallel. To do so we use Dijkstra's algorithm. Next we "contract" $G$ to get $G'=(V',E')$ such that the vertices are the former boundary vertices. There are edges between two boundary vertices, if they were in the same region. The weights of the edges between the nodes is the length of the shortest path between them. Then we find the shortest paths in $G'$. Lastly we combine the information we computed in the first step with the information from the last step to compute the shortest paths from interior vertices to the boundary.
+
+The work of this approach is O($\frac nr \cdot \sqrt r \cdot r\log r + \frac nr\sqrt r \log \frac{n}{\sqrt r}$). The depth is only O($r\log r + \frac nr\sqrt r \log \frac{n}{\sqrt r}$).
+
+\[W=O(n\sqrt r \cdot \log n) \qquad D=(r+\frac {n}{\sqrt r} \log n)\]
+
+For $r=n^{2\epsilon}$ we get the stated bounds.

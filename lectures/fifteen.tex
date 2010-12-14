@@ -47,7 +47,11 @@ Given a tree $T$ we want to find a representation of $T$ such that we can quickl
 
 for every possible root $r\in V(T)$. We can already do the first, but only for a fixed root.
 
-To accomplish this we double each edge of the tree and construct a eulerian tour as a doubly linked circular list of edges. This can be computed in two steps from an edge array. First contstruct adjacency lists, then convert the adjacency list into a tour representation.
+To accomplish this we double each edge of the tree and construct a eulerian tour as a doubly linked circular list of edges. This can be computed in two steps from an edge array. First contstruct adjacency lists, then convert the adjacency list into a tour representation. Adjacency lists can be constructed by sorting the edge array. For every edge in parallel it can check its predecessor in the list. If it starts from a different node, the edge starts an adjacency list, else it hooks up to be an element of the list, making sure that the adjacency lists are circular. We can then construct the euler tour representation by setting
+
+\[\text{succ}(u,v) = \begin{cases} \text{next}(v,u) & \text{next}(v,u)\neq \text{nil}\\ \text{first}(v) & \text{othw}\end{cases}\]
+
+for each edge in parallalel.
 
 Assume we have this representation. To set a vertex $r$ as a root, we break the circular list at an arbitrary adjacent edge.
 

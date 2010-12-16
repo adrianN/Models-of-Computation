@@ -1,0 +1,61 @@
+\subsubsection{Application}
+
+This is based on worked by Hannah Bast, Stefan Funke, Peter Sanders, D. Schulte from 2007.
+
+The basic observation of this approach is the fact that when travelling longer distances there is a small set of points through which all fastest routes go. The same points are valid for all routes that start in relatively close locations. Let's call those points transit nodes.
+
+Under the assumption that this observation is true, a map can be divided into chunks in which transit nodes are equal. We can then precompute fastest paths between all points in a chunk and their transit nodes and the fastest routes between all pairs of transit nodes. Then computing shortest paths is a matter of a couple of lookups and a minimisation.
+
+To find transit points the authors put a $10\times 10$ km grid over Germany. To compute the transit points for one square, they computed shortest paths that have target outside of a $60\times 60$ square. The transit points then are the intersection of these paths with a $30\times 30$ square around the starting square. To optimize this preprocessing they only consider the points that leave the inner square and compute shortest paths from points that leave the outer square. Experimentally this gave them $10-15$ transit points per tile.
+
+As we've seen in the previous section, for planar graph this can be done more rigorously, as we can prove that decomposition exists.
+
+\section{Finding closest pairs}
+
+The algorithm is due to Bentley and Shamos, 1976.
+
+We are given a set $S\subset \R^2$ of $n$ points and want to find the minimum distance between two points, $\delta_S$. We can compute that by divide and conquer, by dividing the pointset. Let $L$ and $R$ be the two halves.
+
+\[\delta_S = \min \{\delta_L, \delta_R, \min_{p\in L, q\in R} d(p,q)\}\]
+
+If we set $\delta = \min \{\delta_L, \delta_R\}$ we want to find out whether there are points in the middle between $L$ and $R$ that are closer. But as we know already that all points within $L$ and $R$ are at least $\delta$ apart from each other, we can restrict the search to a strip of width $2\delta$ around the split line. We can bound the number of points in this strip, as we know that a square of size $2\delta \times 2\delta$ around the split contains at most twelve points. Six on the left and six on the right. 
+
+We can use a sweep line approach to check all points in the middle part. Because of the low density of points in the middle, only a constant number of points have to be checked while examining each point.
+
+Assume the points are presorted.
+
+\begin{lstlisting}
+CLOSEST-PAIR
+$X_m$ = median of $x$-coord
+L = $\{(x,y)\in S | x < x_m\}$
+R = $\{(x,y)\in S | x \geq x_m\}$
+in parallel
+	| $\delta_L =$ CLOSEST-PAIR(L)
+	| $\delta_R =$ CLOSEST-PAIR(R)
+$\delta = \min \{\delta_L,\delta_R\}$
+M = $\{(x,y)\in S | x_m - \delta x \leq x_m+\delta\}$ //y-sorted
+$\delta_M = \min \{d(M[i], M[i+j]) | i=1,\ldots, |M|,\ j = 1,\ldots, 7\}$
+
+return $\min \{\delta,\delta_M\}$
+\end{lstlisting}
+
+The work for this is $W(n) = 2W(n/2) + O(n)$ ($=O(n\log n)$, depth is $D(n) = D(n/2) + O(\log n)$ ($=O(\log ^2n$).
+
+In higher dimensions we get a cutting hyperplane instead of a cutting line. The algorithm stays the same in principle, but the number of nodes we have to check for each point in $M$ is exponential in the number of dimensions. To find closest pairs in the middle part, we recursively solve an auxiliary problem (in a lower dimension).
+
+
+
+\subsection{Auxiliary Problem}
+
+\begin{Def} $S\subset R^d$ is called $(\delta, c)$-sparse if every (hyper) cube of side length $2\delta$ contains at most $c$ points.
+\end{Def}
+
+Given $\delta > 0$ and a $(\delta,c)$ sparse point set $S\subset \R^d$, we want to find all pairs $p,q\in S$ that have distance at most $\delta$.
+
+The key observation is that a $(\delta,c)$ sparse set $M\subset \R^d$, then a projection of $M$ onto a hyperplane $H$ (s.t. $\forall p\in M, d(p,H)\leq \delta$) is also $(\delta,c)$ sparse.
+
+We use a recursive call to find points that have distance at most $\delta$ in the projection and then filter out the "false positives" that are too far apart in the original space.
+
+It is easy to check by induction that the work in $d$ dimensions is $W_d^* = n\cdot \log^{d-1} n$. The depth is $D_d^* = D^*(n/2) + D_{d-1}^*(n) + O(\log n)$, which simplifies to $D_d^*(n) = \log^d n$.
+
+We can now also solve the original problem recursively by using the solution to the auxiliary problem and minimizing over the points with distance at most $\delta$. We get the same work and depth as for the auxiliary problem

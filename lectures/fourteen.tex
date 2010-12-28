@@ -19,7 +19,7 @@ PREFIX-SUM-LIST
 \item for each vertex $i$, $V[i]$ is the sum of all values from vertex $i$ to $u^*+1$ (nil + 1 = 0). 
 \end{itemize}
 
-The invariant holds for $k=0$ by initialisation. In the step from $x-1$ to $k$ the distance of the vertex we're pointing at doubles (unless it has reached the start of the list). The addition of $V[i]$ and $V[P[i]]$ gives us the sum from the necessary vertices.
+The invariant holds for $k=0$ by initialization. In the step from $k-1$ to $k$ the distance of the vertex we're pointing at doubles (unless it has reached the start of the list). The addition of $V[i]$ and $V[P[i]]$ gives us the sum from the necessary vertices.
 \end{pr}
 
 Besides this pointer-jumping technique we can use a different approach that only uses linear work and has depth O($\log n \cdot \log \log n$).
@@ -32,7 +32,7 @@ We flip a coin for each vertex and shortcut $v$ iff $v$ has heads and its predec
 
 \subsection{Connected Components}
 
-We're given a graph $G$ as a vertex array $V$ and an edge array $E$. We want to find an array of components $C$ s.t. for any $u,v\in V$ $C[u] = C[v]$ iff $u$ and $v$ are in one connected components. The idea is to contract edges until each component is represented by one node. We will use a Concurrent Read Concurrent Write PRAM.
+We're given a graph $G$ as a vertex array $V$ and an edge array $E$. We want to find an array of components $C$ s.t. for any $u,v\in V$, $C[u] = C[v]$ iff $u$ and $v$ are in the same connected component. The idea is to contract edges until each component is represented by one node. We will use a Concurrent Read Concurrent Write PRAM.
 
 When we contract stars the label of the new component is the center of the star. We use randomization to decide which parts of the graph are stars. Each vertex is either parent or child with probality $1/2$. Children try to connect to adjacent parents (there may be more than one). We call contractible edges "hooks".
 

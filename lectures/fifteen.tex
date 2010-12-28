@@ -2,13 +2,11 @@ We can improve the depth of this algorithm by modifying the mark and pack steps.
 
 The asymptotic work stays the same.
 
-An alternative algorithm works as follows:
+Lets consider the following deterministic algorithm:
 
 \begin{lstlisting}
 CONTRACT-TREE(V,E)
 	if |E|=0 return V
-	for $v\in V$ do in parallel
-		R[u] = random {p,c}
 	//hooks form a tree
 	H = {[u,v] | u>v} //mark and pack
 	for $v\in V$ do in parallel
@@ -28,11 +26,12 @@ CONTRACT-TREE(V,E)
 
 Instead of contracting stars we construct a tree and start contracting edges in the tree. Since we don't contract stars anymore, we need to do some more work to get pointers to an identifying vertex of the component. Namely we need to get pointers to the root of the tree that we constructed by choosing hooks.
 
-What is the running time of this algorithm? Consider a star where the center node has the highest ID. In this case only one edge is contracted in every recursive step. So we get a linear depth in the worst case. We can improve this by not only constructing $H = \{[u,v] | u>v\}$ but in parallel doing everything with $H = \{[u,v] | u<v\}$ and keeping the result where more edges have been contracted.
+What is the running time of this algorithm? Consider a star where the center node has the highest ID. In this case only one edge is contracted in every recursive step. So we get a linear depth in the worst case. We can improve this by not only constructing $H^+ = \{[u,v] | u>v\}$ but in parallel doing everything with $H^- = \{[u,v] | u<v\}$ and keeping the result where more edges have been contracted.
 
-We want to show thet the number of non isolated vertices in $V'$ decreases geometrically (as that implies a logarithmic recursion depth). Let $V_0$ be the set of non isolated verices in $V$ and $V_0^+, V_0^-$ be the nodes with a larger (smaller) neighbour. Since $V_0= V_0^+\cup V_0^-$, the smaller one of the two sets must be at least half the size of $V_0$. This is actually a bit better than in the randomized case, where we only had a reduction by one quarter.
+We want to show that the number of non-isolated vertices in $V'$ decreases geometrically (as that implies a logarithmic recursion depth). Let $V_0$ be the set of non isolated verices in $V$ and $V_0^+, V_0^-$ be the nodes with a larger (smaller) neighbour. Since $V_0= V_0^+\cup V_0^-$, the smaller one of the two sets must be at least half the size of $V_0$. This is actually a bit better than in the randomized case, where we only had a reduction by one quarter.
 
-We need depth O($\log^2n$) and work O($\log(m+n\log n)$). It is possible to improve this to a depth of O($\log n$)
+Hence CONTRACT\_TREE has depth O($\log^2n$) and work O($\log(m+n\log n)$). \\
+It is possible to improve this to a depth of O($\log n$)
 
 \subsection{The Euler tour technique}
 
@@ -51,11 +50,11 @@ To accomplish this we double each edge of the tree and construct a eulerian tour
 
 \[\text{succ}(u,v) = \begin{cases} \text{next}(v,u) & \text{next}(v,u)\neq \text{nil}\\ \text{first}(v) & \text{othw}\end{cases}\]
 
-for each edge in parallalel.
+for each edge in parallel.
 
 Assume we have this representation. To set a vertex $r$ as a root, we break the circular list at an arbitrary adjacent edge.
 
-There are two types of edges. Advance edges and Retreat edges. The first occurence of a graph edge in the list is the advance edge, the other orientation of the edge in the list is the retreat edge. We want to classify the edges.
+There are two types of edges: advance edges and retreat edges. The first occurence of a graph edge in the list is the advance edge, the other orientation of the edge in the list is the retreat edge. We want to classify the edges.
 
 To do that we use the LIST-SUM algorithm to find the position of each edge pos($[u,v]$) and use that to find the first occurence.
 

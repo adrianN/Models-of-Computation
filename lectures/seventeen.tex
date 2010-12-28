@@ -1,6 +1,6 @@
 \subsubsection{Application}
 
-This is based on worked by Hannah Bast, Stefan Funke, Peter Sanders, D. Schulte from 2007.
+This is based on work by Hannah Bast, Stefan Funke, Peter Sanders, D. Schulte from 2007.
 
 The basic observation of this approach is the fact that when travelling longer distances there is a small set of points through which all fastest routes go. The same points are valid for all routes that start in relatively close locations. Let's call those points transit nodes.
 
@@ -18,7 +18,7 @@ We are given a set $S\subset \R^2$ of $n$ points and want to find the minimum di
 
 \[\delta_S = \min \{\delta_L, \delta_R, \min_{p\in L, q\in R} d(p,q)\}\]
 
-If we set $\delta = \min \{\delta_L, \delta_R\}$ we want to find out whether there are points in the middle between $L$ and $R$ that are closer. But as we know already that all points within $L$ and $R$ are at least $\delta$ apart from each other, we can restrict the search to a strip of width $2\delta$ around the split line. We can bound the number of points in this strip, as we know that a square of size $2\delta \times 2\delta$ around the split contains at most twelve points. Six on the left and six on the right. 
+If we set $\delta = \min \{\delta_L, \delta_R\}$ we want to find out whether there are points in the middle between $L$ and $R$ that are closer. But as we know already that all points within $L$ and $R$ are at least $\delta$ apart from each other, we can restrict the search to a strip of width $2\delta$ around the split line. We can bound the number of points in this strip, as we know that a square of size $2\delta \times 2\delta$ around the split contains at most twelve points (six on the left and six on the right part of the square). 
 
 We can use a sweep line approach to check all points in the middle part. Because of the low density of points in the middle, only a constant number of points have to be checked while examining each point.
 
@@ -52,10 +52,10 @@ In higher dimensions we get a cutting hyperplane instead of a cutting line. The 
 
 Given $\delta > 0$ and a $(\delta,c)$ sparse point set $S\subset \R^d$, we want to find all pairs $p,q\in S$ that have distance at most $\delta$.
 
-The key observation is that a $(\delta,c)$ sparse set $M\subset \R^d$, then a projection of $M$ onto a hyperplane $H$ (s.t. $\forall p\in M, d(p,H)\leq \delta$) is also $(\delta,c)$ sparse.
+The key observation is that if we have a $(\delta,c)$ sparse set $M\subset \R^d$, then a projection of $M$ onto a hyperplane $H$ (s.t. $\forall p\in M, d(p,H)\leq \delta$) is also $(\delta,c)$ sparse.
 
 We use a recursive call to find points that have distance at most $\delta$ in the projection and then filter out the "false positives" that are too far apart in the original space.
 
-It is easy to check by induction that the work in $d$ dimensions is $W_d^* = n\cdot \log^{d-1} n$. The depth is $D_d^* = D^*(n/2) + D_{d-1}^*(n) + O(\log n)$, which simplifies to $D_d^*(n) = \log^d n$.
+It is easy to check by induction that the work in $d$ dimensions is $W_d^* = n\cdot \log^{d-1} n$. The depth is $D_d^* = D_d^*(n/2) + D_{d-1}^*(n) + O(\log n)$, which simplifies to $D_d^*(n) = \log^d n$.
 
 We can now also solve the original problem recursively by using the solution to the auxiliary problem and minimizing over the points with distance at most $\delta$. We get the same work and depth as for the auxiliary problem

@@ -8,11 +8,11 @@ We can use adapted matrix multiplication. Instead of addition we use the minimum
 
 Let $A$ be the adjacency matrix of $G$, with $0$ on the diagonal, $\infty$ if there is no edge and the weight of the edge if it exists. Using above matrix multiplication, the $k$-th power of $A$ contains the lengths of the shortest paths of length at most $k$, hence $A^{\otimes n}$ contains the lengths of all shortest paths. Easy proof by induction.
 
-Since we can do matrix multiplication in logarithmic depths and work O($\log n$) we have an algorithm in depth D=O($\log ^2 n$) and W=O($n^3\cdot \log n$). Fancy algorithms improve on the work by a polylogarithmic factor (note: smart matrix multiplication algorithms don't work anymore after changing the operations).
+Since we can do matrix multiplication in logarithmic depths and work O($n^3$) we have an algorithm in depth D=O($\log ^2 n$) and W=O($n^3\cdot \log n$). Fancy algorithms improve on the work by a polylogarithmic factor (note: smart matrix multiplication algorithms don't work anymore after changing the operations).
 
 We can do better on planar graphs. Since they only have a linear number of edges, the sequential algorithm only takes time O($n \log n$).
 
-\begin{thm}[Cohen 1996] SSSP on planar graphs can be solved in time D=O($\log ^4n$9 and W=O($n^{3/2}$)\end{thm}
+\begin{thm}[Cohen 1996] SSSP on planar graphs can be solved in time D=O($\log ^4n$) and W=O($n^{3/2}$)\end{thm}
 
 That is a big work overhead over the sequential algorithm. We discuss an algorithm that trades depth for better work.
 
@@ -26,7 +26,7 @@ To understand the algorithm we need some preliminaries.
 
 When we apply this recursively we decompose the graph into several regions.
 
-\begin{Def}[Region Decomposition] A familiy of sets $(R_i)_{1\leq i\leq t} \subset V$ which satisfy the following properties:
+\begin{Def}[Region Decomposition] A family of sets $(R_i)_{1\leq i\leq t} \subset V$ which satisfy the following properties:
 
 \begin{itemize}
 \item each vertex $v$ is in at least one $R_i$ (if they are in exactly one set they are called interior vertices, otherwise boundary vertices)

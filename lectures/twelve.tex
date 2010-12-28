@@ -26,11 +26,11 @@ The running time on $P$ processors is at least $\max(W/P,D)$.
 
 \begin{thm} An algorithm with work $W$ and depth $D$ can be executed in time $O(W/P+D)$ on a CREW PRAM with $P$ processors.\end{thm}
 
-\begin{pr} Let level $i$ of a circuit be all gates that only use inputs from levels up to $i-1$ and have at least one input thet uses at least one input from level $i-1$. Level 0 is the input. Let $l_i$ be the number of gates at level $i$
+\begin{pr} Let level $i$ of a circuit be all gates that only use inputs from levels up to $i-1$ and have at least one input from level $i-1$. Level 0 is the input. Let $l_i$ be the number of gates at level $i$
 
-If we proceed levelwise in parellel with $P$ processors we need time
+If we proceed levelwise in parallel with $P$ processors we need time
 
-\[\sum_{i=1}^D \rup{\frac{l_i}{p}}\leq \sum_{i=1}^D 1+\frac{l_i}{p} = D+\frac 1p \sum_{i=1}^D l_i = \frac Wp +D\]
+\[\sum_{i=1}^D \rup{\frac{l_i}{P}}\leq \sum_{i=1}^D 1+\frac{l_i}{P} = D+\frac 1P \sum_{i=1}^D l_i = \frac WP +D\]
 
 \end{pr}
 
@@ -46,8 +46,8 @@ SUM(A)
 if |A| = 1 then
 	return A[1]
 else
-	for $i=1,3\ldots n/2$ do in parallel
-		B[i] = A[i] + A[i+1]
+	for $i=1,2\ldots \lceil n/2 \rceil$ do in parallel
+		B[i] = A[2i-1] + A[2i]
 	return SUM(B)
 \end{lstlisting}
 
@@ -59,11 +59,11 @@ else
 SCAN(A)
 if |A|=1 return A
 else
-	for $i=1,3\ldots n/2$ do in parallel
-		B[i] = A[i] + A[i+1]
+	for $i=1,2\ldots \lceil n/2 \rceil$ do in parallel
+		B[i] = A[2i-1] + A[2i]
 	//S[0] = 0
 	S = SCAN(B)
-	for $i=1\ldots n/2$ do in parallel
+	for $i=1\ldots \lceil n/2 \rceil$ do in parallel
 		P[2i] = S[i]
 		P[2i-1] = S[i-1] + A[2i-1]
 	return P

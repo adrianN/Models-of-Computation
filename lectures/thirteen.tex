@@ -4,7 +4,7 @@ Given an array $A$ with pairwise distinct elements we want to compute an array $
 
 \subsection{Quicksort}
 
-Everybody knows sequential quicksort. It can be trivially parallelised by doing the recursive calls in parallel. It is more tricky to split the array in parallel.
+Everybody knows sequential quicksort. It can be trivially parallelized by doing the recursive calls in parallel. It is more tricky to split the array in parallel.
 
 Obviously we can compare each element to the pivot in parallel. If we construct an array that contains a 1 at position $i$ if the $i$-th element is larger than the pivot, we can compute a prefix sum over that and get the positions of the elements in the new array. With that information we can copy the values to the new array in parallel too.
 
@@ -29,7 +29,7 @@ This way the work for sorting is still $O(n\log n)$ (with a slightly larger fact
 
 \subsection{Mergesort}
 
-Mergesort can also be trivially parallelised in the recursive steps, but merging in parallel is more tricky.
+Mergesort can also be trivially parallelized in the recursive steps, but merging in parallel is more tricky.
 
 Suppose we have two sorted arrays $X,Y$ and want to merge them into one sorted array. The idea is to subdivide $X$ and $Y$ into a bunch of subarrays of equal size and recombine them later
 

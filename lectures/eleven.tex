@@ -1,7 +1,7 @@
 \begin{thm} Counting is impossible in 1-interval connected graphs with asynchronous start.\end{thm}
 \begin{pr} Suppose that an algorithm $A$ needs time $t(n)$ for graphs of size $n$. We show that the algorithm can't distinguish a static line of length $n$ from a dynamic line with $n'$ vertices, where $n'=n+2t(n)$.
 
-Notation: $L=l_1\circ l_2\circ \ldots \circ l_m$ is a line of $m$ vertices. $\text{shift}(L,r)$ is the line obtained by shifting the vertices of $L$ by $r$.
+Notation: $L=l_1\circ l_2\circ \ldots \circ l_m$ is a line of $m$ vertices. $\text{shift}(L,r)$ is the line obtained by shifting the vertices of $L$ by $r$, i.e. $\text{shift}(L,r) = l_r\circ l_{r+1} \circ \ldots \circ l_1 \circ l_2 \circ \ldots \circ l_{r-1}$.
 
 The static line we will consider is $A$, the dynamic line is $A\circ B(r)$.
 
@@ -31,17 +31,17 @@ Each vertex v:
 	output $|A_v|$
 \end{lstlisting}
 
-\begin{lem} Assume that $G$ is 1-interval connected and we have synchronous start at time $0$. For all $r<n$ and for all $v\in V$:
+\begin{lem} Let $A_v(r)$ be the set $A_v$ at the end of round $r$. $A_v(0)=\{ID(v)\}$. Assume that $G$ is 1-interval connected and we have synchronous start at time $0$. For all $r<n$ and for all $v\in V$:
 \[|A_v(r)| \geq r+1\]
 \end{lem}
 
 \begin{pr} Induction over $r$. Intially everything is ok. $r\rightarrow r+1, r<n-1$. Let $A'_v(r+1)$ be the set of IDs known to $v$ if we would start at time $1$ instead of time 0. The induction hypothesis implies that $|A'_v(r+1)|\geq r+1$ (note: this is equal to $A_v(r)$). If $|A_v'(r+1)|\geq r+2$ we are done. Otherwise $|A_v'(r+1)|=r+1$. 
 
-$A_v(r+1)$ is the set of IDs known to all vertices in $A'(r+1)$ at round 1.
+$A_v(1)$ is the set of IDs known to vertex $v \in A'(r+1)$ at round 1. Then
 
 \[A_v(r+1)=\bigcup_{u\in A_v'(r+1)} A_u(1)\]
 
-$|A_v(r+1)|\geq |A'_v(r+1)|+1$, since in the first some IDs have been exchanged.
+In step 1 there is at least one edge leaving the set $A'_v(r+1)$. Also $ID(u)\in A_u(1)$ for all $u$. Thus $|A_v(r+1)|\geq |A'_v(r+1)|+1$.
 \end{pr}
 
 \subsection{Small Messages}
@@ -50,6 +50,7 @@ Until now we didn't restrict the size of the messages. What happens if we restri
 
 Suppose that the vertices are in a state which is a solution to the k-committee problem. If $k\geq n$ there is only one committee. We can use this to count the number of nodes:
 
+\begin{figure}[hbt]
 \begin{lstlisting}
 Each node v:
 	$x_v$=1
@@ -59,12 +60,14 @@ Each node v:
 		If different committee ID or $\bot$
 			$x_v$=0
 \end{lstlisting}
+\caption{verify(k)}
+\end{figure}
 
-\begin{lem} If $G$ is 1-interval connected, then at the end of verify(K) each node outputs 1, iff $k\geq n$\end{lem}
-\begin{pr} If $k\geq n$ we know that all vertices are in the same committee, and all vertices broadcast the same ID. It is impossible for a node to switch to $0$. If $k<n$ there are at least $i$ nodes in each committee where $x=0$. Let $C = C_1 \dot \cup C_2$ be any committee, where $\forall v\in C_0: x_v=0$. Consider a cut in the graph that separates $C_1$ from $C_0$ and $V\backslash C$. There must be at least one edge over the cut. Over that edge either a different ID, or $\bot$ will be send and the number of nodes with $x=0$ increases.
+\begin{lem} If $G$ is 1-interval connected, then at the end of verify(k) each node outputs 1, iff $k\geq n$\end{lem}
+\begin{pr} If $k\geq n$ we know that all vertices are in the same committee, and all vertices broadcast the same ID. It is impossible for a node to switch to $0$. If $k<n$ there are at least $i$ nodes in each committee where $x=0$. Let $C = C_0 \dot \cup C_1$ be any committee, where $\forall v\in C_0: x_v=0$. Consider a cut in the graph that separates $C_1$ from $C_0$ and $V\backslash C$. There must be at least one edge over the cut. Over that edge either a different ID, or $\bot$ will be send and hence the number of nodes with $x=0$ increases.
 \end{pr}
 
-So by doing successive doubling of $k$ we can find $n$.
+So by doing successive doubling of $k$ followed by binary search, we can find $n$.
 
 \begin{thm} A solution to the k-committee selection problem can be computed in time O($k^2$) with logarithmically sized messages on a 1-interval connected graph with synchronous start\end{thm}
 

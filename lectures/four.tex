@@ -1,6 +1,6 @@
 We now want to show that this algorithm takes logarithmically many steps in expectation. We will look at the edges of the graph. We remove edges if they are incident to vertices that stop. We'll show that in expectation half the edges are removed in every round. 
 
-Let $G_i=(V_i,E_i)$ be the graph at the beginning of the $i$th round. Obviously this is a random graph, as it results from a random process. Let $X_i$ be the random variable indicating the number of removed edges in phase $i$.
+Let $G_i=(V_i,E_i)$ be the graph at the beginning of the $i$th round. Obviously this is a random graph, as it results from a random process. Let $X_i$ be the random variable indicating the number of edges removed in phase $i$.
 
 \begin{lem} \label{lem:at_least_half}$\E(X_i |G_i = G) \geq |E(G)|/2$ \end{lem}
 
@@ -25,7 +25,16 @@ that counts the edges that are incident to $v'$ and let $Y=\sum_{v,v'} Y_{v\righ
 	&= |E(G)|
 \end{align*}
 
-Let us now consider the relationship between $Y$ and $X_i$. Consider an edge $e={v,v'}$ as in figure \ref{fig:at_least_half} that is removed. $e$ gets counted in $Y$ if $E_{x\rightarrow v'}$ or if $E_{y\rightarrow v}$ happened. So each deleted edge gets counted up to two times. It can not happen that for example $E_{x'->v'}$ happens simultaneously with $E_{x\rightarrow v'}$, because we requested $x$ to be the minimal random value among all neighbours. Hence $X_i \geq Y/2$.
+Let us now consider the realtionship between $Y$ and $X_i$. We claim $X_i \geq Y/2$. We make the following observations.
+
+\begin{enumerate}
+\item If $(x,v'),(x',v') \in E$ and $x\neq x'$ then at most one of the events $E_{x\rightarrow v'}$, $E_{x'\rightarrow v'}$ occurs. This holds because occurrence of $E_{x\rightarrow v'} $ implies that $c_x$ is minimal ammong $\{c_v|v\in adj(v')\}$.
+\item If $E_{v\rightarrow v'}$ occurs, all edges incident to $v'$ are removed from the graph, we say that $(u,v')$ is cointed in $Y_{v\rightarrow v'}$. This is because $v$ is added to the MIS and hence all edges incident to a vertex in $v\cup adj(v)$ are removed.
+\item $(v,v')$ can be counted at most twice: once in $Y_{x\rightarrow v'}$ and once in $Y_{y\rightarrow v}$ where $x$ and $y$ are neighbours of $v$ and $v'$ respectively.
+\end{enumerate}
+%Let us now consider the relationship between $Y$ and $X_i$. Consider an edge $e={v,v'}$ as in figure \ref{fig:at_least_half} that is removed. $e$ gets counted in $Y$ if $E_{x\rightarrow v'}$ or if $E_{y\rightarrow v}$ happened. So each deleted edge gets counted up to two times. It can not happen that for example $E_{x'->v'}$ happens simultaneously with $E_{x\rightarrow v'}$, because we requested $x$ to be the minimal random value among all neighbours. Hence $X_i \geq Y/2$.
+
+%TODO explain connection to the text
 
 \begin{figure}
 \begin{center}
@@ -49,9 +58,9 @@ We apply the law of total expectation\footnote{I think that's what it's called} 
 \begin{align*}
 \E(|E_i|) &= \sum_{G\subseteq G_1} P(G_{i-1} =G) \cdot \E(|E_i| | G_{i-1}=G)\\
 	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot \E(|E_{i-1}| -X_{i-1} | G_{i-1}=G)\\
-	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (\E(|E_{i-1}| | G_{i-1}=G) - \E( -X_{i-1} | G_{i-1}=G))\\
+	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (\E(|E_{i-1}| | G_{i-1}=G) - \E( X_{i-1} | G_{i-1}=G))\\
 	&=\sum_{G\subseteq G_1}  P(G_{i-1} =G) \cdot (|E(G)| - \E(X_{i-1} | G_{i-1}=G))\\
-	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{=} \sum_{G\subseteq G-1}  P(G_{i-1} =G) \cdot (|E(G)| - \frac{|E(G)|}{2})\\
+	&\stackrel{\text{lem. \ref{lem:at_least_half}}}{\leq} \sum_{G\subseteq G-1}  P(G_{i-1} =G) \cdot (|E(G)| - \frac{|E(G)|}{2})\\
 	&=\frac 12 \sum_{G\subseteq G-1}  P(G_{i-1} =G) \cdot |E(G)|\\
 	&=\frac 12 \E(|E_{i-1}|)\\
 \end{align*}
@@ -67,7 +76,7 @@ By induction we get the bound claimed in the lemma.
 \E(T) &= \sum_{i\geq 1} i P(T=i) \\
 	&= \sum_{i\geq 1} P(T\geq i)\\
 	&\leq C + \sum_{i> C} P(T\geq i)\\
-\intertext{Note that $P\geq i$ implies $|E_i|\geq 1$, otherwise the algorithm would have stopped.}
+\intertext{Note that $T\geq i$ implies $|E_i|\geq 1$, otherwise the algorithm would have stopped.}
 	&\leq C+ \sum_{i> C} P(|E_i|\geq 1)\\
 	&\leq C+ \sum_{i>C} |E_1|\cdot 2^{-i+1}\\
 	&\leq C+ n^2 \cdot \sum_{i>C} 2^{-i}\\
@@ -80,7 +89,7 @@ Choose $C$ to be $2\log n$ to get the result.
 \paragraph{Remark.} The algorithm may be fast in expectation, but that doesn't guarantee an acceptable running time with high probability. We would like to have a good running time with probability at least $1-n^{-c}$.
 
 \begin{thm} $P(T> c\log n) = O(n^{2-c})$\end{thm}
-\begin{pr} $T>i$ implies $E_i\geq 1$, so $P(T > i) \leq |E_1| \cdot 2^{-c\log n} = n^{2-c}$.\end{pr}
+\begin{pr} Let $i=c\codt \log n -1$. $T>i$ implies $E_i\geq 1$, so $P(T > i) \leq 2|E_1| \cdot 2^{-c\log n} = n^{2-c}$.\end{pr}
 
 \paragraph{Remark.} \begin{enumerate}
 \item We don't need to draw real numbers. It is sufficient to communicate $O(\log n)$ bits (exercise). 
@@ -160,7 +169,7 @@ if $v_i\in $ MIS, then
 \item Let $v\in V$ be any vertex and let $w_1,\ldots,w_d$ be its neighbours in $G$
 
 %picture
-Since in the clique are $d+1$ vertices, but it only has $d$ edges to neigbouring cliques, one vertex must be free to join the MIS.
+Since in the clique are $d+1$ vertices, but it only has $d$ edges to neigbouring cliques, one vertex must be free for joining the MIS.
 
 \end{enumerate}
 

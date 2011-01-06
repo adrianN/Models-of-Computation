@@ -6,13 +6,15 @@ See \href{http://en.wikipedia.org/wiki/Small_world_experiment}{Wikipedia:Small w
 
 The first observation is that real networks, e.g. social networks, are rich in local connections: we know many people in our university, but few people in neigbouring cities. The model should reflect that. We consider a superposition of two graphs.
 
-Let $G_n(l,f,\alpha)$ be the graph we will consider. The vertex set are points on a $\sqrt{n}\times \sqrt{n}$ grid. Distance $d(u,v)$ between vertices is computed by Manhatten distance. We have two kinds of edges:
+Let $G_n(l,f,\alpha)$ be the graph we will consider. The vertex set are points on a $\sqrt{n}\times \sqrt{n}$ grid. Distance $d(u,v)$ between vertices is computed by Manhattan distance. We have two kinds of edges:
 
 \begin{itemize}
 \item \emph{Local contacts}: Each vertex is connected to all vertices at distance $\leq l$
 \item \emph{Far contacts}: Every vertex has $f$ far contacts, that are randomly chosen. The probability to choose an edge $(u,v)$ is proportional to $d(u,v)$
 \[P(\text{$u$ chooses $v$}) = \frac{d(u,v)^{-\alpha}}{\sum_{w\neq u} d(u,w)^{-\alpha}}\]
 \end{itemize}
+
+In the following boundary cases could have been avoided by arguing over a torus instead of a grid.
 
 In the pure grid graph with only local contacts the diameter is very high, on the order of $\sqrt n$. Adding random neighbours changes this. The factor $\alpha$ regulates how important the distance is for the probability to choose neighbours. At $\alpha=0$ we have a uniform distribution.
 
@@ -25,9 +27,11 @@ Note that if $\alpha > 2$ the statement becomes false (the diameter becomes $n^\
 
 \begin{thm}\label{thm:finding_short_paths} \mbox{}\begin{enumerate}
 \item Let $l=f=1$, $\alpha =2$. Then there is a decentralised algorithm $A$ with expected delivery time $O(\log^2n)$
-\item Let $l,f\geq 1$, $0 \leq \alpha \lneq 2$. Then there is a $c=c(l,f,\alpha)>0$ such that the expected delivery time of any decentralized algorithm is at least $c n^{\frac{2-\alpha}{3}}$.
+\item Let $l,f\geq 1$, $0 \leq \alpha < 2$. Then there is a $c=c(l,f,\alpha)>0$ such that the expected delivery time of any decentralized algorithm is at least $c n^{\frac{2-\alpha}{3}}$.
 \end{enumerate}
 \end{thm}
+
+By theorem \ref{thm:small_world_graphs} any two vertices are connected by a path of logarithmic length with high probability. If $\aplha=2$, a path of length $O(\log ^2 n)$ can be found by a decentralized algorithm. However if $\alpha <2$ no decentralized algorithm can find it.
 
 Recall: If $X = \sum_{i=1}^n X_i$
 \begin{align*}
@@ -51,14 +55,14 @@ and 2. holds because
 \[\sum_{i\geq 1} \frac{x^{2i-1}}{(2i-1)!} - \frac{x^{2i}}{(2i)!} \geq 0\]
 \end{pr}
 
-\begin{pr}[Theorem \ref{thm:small_world_graphs}] We will assume $\alpha=0$ and $n$ "large enough" to make things easier. Under these assumptions $\forall u: \sum_{v\neq u} d(u,v)^{-\alpha} = n-1$. 
+\begin{pr}[Theorem \ref{thm:small_world_graphs}]For a vertex $v$ let $f_v$ be the far-away neighbour of $v$. We will assume $\alpha=0$ and $n$ "large enough" to make things easier. Under these assumptions $\forall u: \sum_{v\neq u} d(u,v)^{-\alpha} = n-1$. 
 
 For $S\subset V$ let 
 \[X(S) = \bigcup_{v\in S} \tilde N(v) \backslash S\]
 
-where $\tilde N(v)$ is one far-away neighbour $f_v$ of $v$ and $f_v$'s right neighbour. Let $C_0$ be the upper left subgrid of sidelength $\log n$ and let
+where $\tilde N(v)$ is a set of two nodes: one far-away neighbour, $f_v$, of $v$ and $f_v$'s right neighbour. Let $C_0$ be the upper left subgrid of sidelength $\log n$ and let
 
-\[C_{i+1} = X(C_{i-1})\]
+\[C_{i} = X(C_{i-1})\]
 
 We will show that 
 
@@ -73,15 +77,15 @@ Let $v\not \in C_{i-1}$. Define a random variable $X_v$ that is $1$ if $v\in C_i
 
 \[X_v = \begin{cases} 1& \exists v'\in C_{i-1}: v\in \tilde N(v')\\ 0& \text{otherwise}\end{cases}\]
 
-Clearly the sum of these variables is exactly $|C_i|$. We use Chebishev to bound the size of $C_i$ (so we first compute the variance). Let $|C_i| = S$
+Clearly the sum of these variables is exactly $|C_i|$. We use Chebishev to bound the size of $C_i$ (so we first compute the variance). Let $|C_{i-1}| = s$
 
 Since $X_v$ is an indicator variable we have 
 
 \[\E(X_v) = 1-P(X_v=0)\]
 	
-$X_v$ is 1 if either $v$ is a far contact of some node, or $v$'s left neighbour, $u$, is such a contact. The probability that one vertex selects $v$ or $u$ is $2/(n-1)$. Since the choices are independent:
+$X_v$ is 1 if either $v$ is a far contact of some node, or $v$'s left neighbour, $u$, is such a contact. The probability that a particular vertex selects $v$ or $u$ is $2/(n-1)$. Since the choices are independent:
 
-\[\E(X_v) = 1-\left(1-\frac{2}{n-1}\right)^S\]
+\[\E(X_v) = 1-\left(1-\frac{2}{n-1}\right)^s\]
 
 Of course if $v$ is on the left edge of the grid we get $1/(n-1)$, but we'll ignore that for now. For calculating the variances we need $\E(X_uX_v)$ too. We have
 
@@ -93,14 +97,14 @@ by inclusion-exclusion. The interesting part is $P(X_u=X_v=0)$. There are severa
 
 With these two expectations we can compute the variance. 
 
-But first we bound the size of $C_i$. The following formula also considers the edge cases:
+But first we bound the size of $C_i$. The following formula also considers the boundary cases:
 
 \begin{align*}
-\E(C_i) &\geq (n-|C_{i-1}| -\sqrt n) \cdot \left(1-\left(1-\frac{2}{n-1}\right)^S\right) \\
+\E(C_i) &\geq (n-|C_{i-1}| -\sqrt n) \cdot \left(1-\left(1-\frac{2}{n-1}\right)^s\right) \\
  &\geq \left(n- 8\frac{n}{\log n} - \sqrt{n}\right) \cdot \left(1-e^{-\frac{2s}{n-1}}\right)\\
  &\geq \left(n- 9\frac{n}{\log n}\right) \cdot \left(1-e^{-\frac{2s}{n-1}}\right)\\
- &\geq \left(1- 9\frac{n}{\log n}\right)n \cdot \left(1-\left(1-\frac{2s}{n-1}+\frac 12 \left(\frac{2s}{n-1}\right)^2\right)\right)\\
- &\geq \left(1- 9\frac{n}{\log n}\right)\left(2S\left(1+\frac{1}{n-1}-(1+o(1))\frac{2s^2}{n}\right)\right)\\
-\intertext{Since $S \in o(n)$}\\
+ &\geq \left(1- \frac{9}{\log n}\right)n \cdot \left(1-\left(1-\frac{2s}{n-1}+\frac 12 \left(\frac{2s}{n-1}\right)^2\right)\right)\\
+ &\geq \left(1- \frac{9}{\log n}\right)\left(2s\left(1-(1+o(1))\frac{2s^2}{n}\right)\right)\\
+\intertext{Since $s \in o(n)$}\\
  &\geq (1- o(1))2S\\
 \end{align*}

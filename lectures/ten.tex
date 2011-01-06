@@ -26,14 +26,15 @@ In the mapping we have
 \begin{align*}
 \norm{f(v)-f(w)}_{\infty} &= \max_{1\leq i\leq d} |f(v)_i-f(w)_i|\\
 	&\geq |f(v)_d-f(w)_d|\\
-	&= |d_t(v,c)+d_T(w,c)|\\
+	&= |d_T(v,c)+d_T(w,c)|\\
 	&=d_T(v,w)
 \end{align*}
 
-and since $c$ was mapped to $0$ and the embedding in constructed inductively, vertices at $d_T(v,c)=k$ have coordinates with entries $\{\pm i |0\leq i\leq k\}$. From this we can also derive an upper bound:
+and since $c$ was mapped to $0$ and the embedding in constructed inductively, $|f(v)_i| = |f(v)_i-f(c)_i|$%vertices at $d_T(v,c)=k$ have coordinates with entries $\{\pm i |0\leq i\leq k\}$. From this we can also derive an upper bound:
 
 \begin{align*}
-|f(v)_i-f(w)_i| &\leq d_T(v,c)+d_T(w,c)\\
+|f(v)_i-f(w)_i| & \leq |f(v)_i| + |f(w)_i|\\
+	&\leq d_T(v,c)+d_T(w,c)\\
 	&=d_T(v,w)
 \end{align*}	
 
@@ -66,9 +67,9 @@ It is obviously not possible to do an isometric embedding for general graphs. Ho
 Let $H\subseteq G$, $V(H) = V(G), E(H) \subseteq E(G)$ with $H$ connected. Any greedy embedding for $H$ is also one for $G$. 
 \end{pr}
 
-Now we how that an embedding exists. We need to show how to find it efficiently.
+Now we know that an embedding exists. We need to show how to find it efficiently.
 
-\begin{thm} A greedy embedding of a graph $G$can be computed by a distributed synchronous algorithm in time $O(D\log n)$.\end{thm}
+\begin{thm} A greedy embedding of a graph $G$ can be computed by a distributed synchronous algorithm in time $O(D\log n)$.\end{thm}
 
 \begin{pr}[Sketch.] We start by computing a BFS tree. We proceed by computing an embedding for that tree. Recursively find centers of the tree. This can be done by flooding and echoing. Every vertex can count how many vertices are in the graph and can compute the number of vertices in its subtrees. The potential centers can then coordinate. 
 

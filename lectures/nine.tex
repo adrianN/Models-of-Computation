@@ -1,21 +1,27 @@
-
-
 \subsection{Greedy Embeddings}
 
 We want to embed the graph in a space such that we can successfully find a path between two nodes just by looking at the neighbours and the knowledge about the coordinates. An embedding $f$ is greedy if for any $s\neq t\in V$ then there is a $v\in N(s)$ such that the distance decreases:
 
 \[d(f(v),f(t)) < d(f(s),f(t))\]
 
-In a greedy embedding any $t\in V$ has an edge to $v$ that is closest in the embedding (otherwise $v$ can't be reached greedily).
+In a greedy embedding, we can find a path from $s$ to $t$ in a greedy manner. If we are currently in $u$, we go to a neighour $v$ of $u$ that is closer to $t$.
 
-For example hamiltonian graphs have a greedy embedding on the euclidian plane (draw them as a line). However not all graphs have such an embedding on the plane.
+For example Hamiltonian graphs have a greedy embedding into the Euclidian plane (draw them as a line). However not all graphs have such an embedding on the plane.
 
-\begin{lem} $K_{k,5k+1}$, $V=A\dot \cup B$ has no greedy embedding in the euclidian plane. 
+\begin{lem}  For $k\geq 1$, $K_{k,5k+1}$, $V=A\dot \cup B$ has no greedy embedding in the euclidian plane. 
 \end{lem}
 
-\begin{pr} Assume for the sake of contradiction that $f:V\rightarrow \R$ is a greedy embedding.Let $c(v)$ be the closest vertex in A in $f$. There is a vertex $a\in A$ which is the closest neighbour for $b_1,b_2,\ldots b_6\in B$. The circle around $b_{i+1}$ with radius $d(a,b_{i+1})$ must be empty since it can't contain vertices from $A$ by choice of $a$ and it mustn't contain vertices from $B$ (otherwise there would be edges within $B$). 
+\begin{pr} Let $A$ and $b$ be the two sides of $K_{k,5k+1}$ with $|A|=k$ and let $V=A\dot \cup B$. Assume for the sake of contradiction that $f:V\rightarrow \R$ is a greedy embedding. For a vertex $v\in V$ let $c(v)$ be a closest vertex under the embedding $f$. 
+
+For $b\in B$ we must have $c(b)\in A$. Assume otherwise, i.e. $c(b)\in B$. Consider the greedy path from $b$ to $c(b)$. The first edge must go from $b$ to a vertex $a\in A$. Then $d(b,a) < d(b,c(b))$, a contradiction.
+
+Since $|B|=6|A|$, there is an $a\in A$ and six nodes $b_1,b_2,\ldots, b_6$ such that $a$ is a closest neigbour of $b_i$, $1\leq i\leq 6$. The vertices $b_1$ to $b_6$ are labelled in clockwise order around $a$ %CONTINUE
+
+The circle around $b_{i+1}$ with radius $d(a,b_{i+1})$ must be empty since it can't contain vertices from $A$ by choice of $a$ and it mustn't contain vertices from $B$ (otherwise there would be edges within $B$). 
 
 % pic star
+
+\emph{The following part is likely incomplete or wrong}
 
 There must be an angle that is less or equal to the average $\leq \pi/3$. Let $\phi_a\leq \pi/3$ be the angle between $b_i$ and $b_{i+1}$. Consider the triangle $a,b_i,b_{i+1}$. Since the anglesum in triangles is $\pi$ there must also be an angle, wlog the largest of those is $\phi_i$, that is $\geq \pi/3$. But then the distance between $b_i$ and $b_{i+1}$ is defined by the law of sines:
 
@@ -31,7 +37,7 @@ if on the other hand $\phi_i > \pi/2$ we use $\phi_i < \pi -\phi_\alpha$. This h
 
 because $\sin$ is decreasing in that interval. As $\sin(\pi - \phi_\alpha) = \sin(\phi_\alpha)$, we got that $\sin(\phi_i) > \sin(\phi_\alpha)$
 
-Thus from here and from law of sines we get that $d(\alpha, b_{i+1}) \ge d(b_i, b_{i+1})$, where equality holds only if we have $\phi_i = \phi_\alpha = \pi/3$.
+Thus from here and from law of sines we get that $d(a, b_{i+1}) \ge d(b_i, b_{i+1})$, where equality holds only if we have $\phi_i = \phi_\alpha = \pi/3$.
 \end{pr}
 
 \begin{thm} Every 3-connected planar graph has a greedy embedding. \qed\end{thm}
@@ -42,7 +48,7 @@ This is however not useful, since the networks we're considering don't have that
 
 \subsection{Greedy routing in normed spaces}
 
-Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a different difference metric. A norm needs to have these properties
+Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a different metric. A norm needs to have these properties
 
 \begin{enumerate}
 \item $\norm{0} = 0$, $v\neq 0 \Rightarrow \norm{v} >0$
@@ -52,7 +58,7 @@ Instead of two dimensions we generalize to $f:V\rightarrow \R^n$ and use a diffe
 
 With the norm it is easy to define the distance as the length of the vector between two points.
 
-\begin{lem} Let $(\R^n, \norm{\cdot})$ be a normed space. If it admits a greedy embedding of any graph with $N$ vertices then
+\begin{lem} Let $(\R^n, \norm{\cdot})$ be a normed space. If it admits a greedy embedding of every graph with $N$ vertices then
 
 \[n \geq \log_3(N-1)\]
 \end{lem}
@@ -71,15 +77,15 @@ d(x_i,x_j)&=\norm{x_i - x_j} \\
   &=d(f(u_j),0)
 \end{align*}
 
-So the distance between $u_i$ and $u_j$ is strictly smaller than the distance between $u_j$ and the origin, a contradiction.
+So the distance between $x_i$ and $x_j$ is strictly smaller than the distance between $x_j$ and the origin, a contradiction.
 
-Hence balls of radius $1/2$ around each $u_i$ is empty and the ball of radius $3/2$ around $u$ contains $N-1$ smaller balls.
+Hence balls of radius $1/2$ around each $w_i$ are pairwise disjoint and the ball of radius $3/2$ around $u$ contains $N-1$ smaller balls.
 
 \[\Vol(B_{3/2}) \geq (N-1)\Vol(B_{1/2})\]
 
 In normed spaces $\Vol(B_r) = r^n \Vol(B_1)$. We get
 
-\[\frac{3}{2}^n \Vol(B_1) \geq (N-1)(\frac{1}{2}^n \cdot \Vol(B_1)\]
+\[\frac{3}{2}^n \Vol(B_1) \geq (N-1)(\frac{1}{2})^n \cdot \Vol(B_1)\]
 
 And thus $3^n\geq N-1$
 \end{pr}

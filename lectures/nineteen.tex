@@ -1,0 +1,76 @@
+\section{External Memory Sorting}
+
+See also Prof. Mehlhorn's notes on the website.
+
+\subsection{Lower Bound for Permuting/Sorting}
+
+The input is $N$ items stored in $N/B$ disk blocks. We want to compute a permutation on the input and store it in the same blocks in which the input was stored. We make the following assumptions:
+
+\begin{itemize}
+\item The only operation allowed on the data is moving it. Other operations, e.g. dublicating or altering are not possible.
+\item The algorithm only uses the first $2N/B$ disk blocks.
+\item Disk blocks are either full or empty.
+\end{itemize}
+
+The first assumption is essential, the second assumption only makes the proof easier to state.
+
+The current state of the algorithm can be described by three pieces of information
+
+\begin{enumerate}
+\item Items in main memory
+\item Contents of each disk block (as a set)
+\item Order of the elements in each non-empty disk block.
+\end{enumerate}
+
+There are $N!$ distinct final states, one for each possible permutation. We partition these states into equivalence classes. Two states are equivalent if they agree in 1) and 2), i.e. the same blocks are in memory and the contents of the disc blocks are equal (but not necessarily in the same order).
+
+The size of the equivalence classes is
+
+\[\geq \frac{N!}{(B!)^{N/B}}\]
+
+($\geq$ since we don't consider the contents of the main memory in the calculation). Let $C_t$ be tho number of reachablo equivalence classes in $t$ I/O operations. $C_0=1$ as only the initial state is reachable without reading or writing anything. For $C_{t+1}$ we get:
+
+\[C_{t+1} \leq \begin{cases}
+C_t \cdot \frac{2N}{B}	& \text{when reading}\\
+C_t \cdot \frac{2N}{B} \cdot \choose{M}{B}	& \text{when writing}
+\end{cases}\]
+
+Assume that the algorithm never uses more than $T$ I/Os. To to able to reach every equivalence class we need
+
+\[\frac{N!}{(B!)^{N/B}} \leq C_T \leq \frac{2N}{B})^T \choose{M}{B}^{T/2}\]
+
+(assuming we write as often as we read, it's impossible to write more often due to our assumptions). We use $(x/e)^x\leq x! \leq x^x$ to modify the inequality:
+
+\begin{align*}
+\frac{N!}{(B!)^{N/B}} \leq (\frac{2N}{B})^T \choose{M}{B}^{T/2}\\
+	&\leq (\frac{2N}{B})^T (\frac{M^B}{B!})^{T/2}\\
+	&\leq (\frac{2N}{B})^T (\frac{Me}{B})^{B \cdot T/2}
+\end{align*}
+
+and the other side:
+
+\[\frac{N}{e}^N (\frac{1}{B})^N \leq \frac{N!}{(B!)}^{N/B}\]
+
+Now we take logarithms and solve for $T$ to get:
+
+\[\frac{2N}{B} \log \frac{N}{eB} \leq T\frac{2}{B} \log \frac{2N}{b}  T \log \frac{Me}{B}\]
+
+hence
+
+\[T\geq \frac{2N}{B} \cdot \frac{\log \frac{N}{eB}}{\log \frac{Me}{B} + \frac{2}{B} \log \frac{2N}{B}}\]
+
+This looks pretty similar to the upper bound from the analysis of Mergesort.
+
+\begin{thm} The number of I/O-operations in the worst case is 
+
+\[\Omega(\min \left(\frac{N}{B} \cdot \frac{\log \frac{N}{eB}}{\log \frac{Me}{B}}, N\right))\]
+\end{thm}
+
+\begin{pr} We do a case distinction. If $\log \frac{Me}{B} > \frac 2B \log \frac{2N}{B}$ the first part of the minimum can be derived from the previous bound on $T$. Otherwise $N$ can be derived.
+\end{pr}
+
+\subsection{Blubb}
+
+Recall the list ranking algorithm from section bla. We want to find an external memory algorithm for the problem. We use the notation from Prof. Mehlhorn's script.
+
+\paragraph{Phase 1} Scan over the list (in the order in which elements are stored on disk, call this order $L$) and choose a random bit for each item. Item $w$ generates the triple (prod[v], w, bit of w). Proceed to sort the triples lexicographically, call the resulting sequence $T$. Now scan over $L$ and $T$ in lock-step fashion, i.e., scan item $v$ of $L$ and item (v,w,bit of w) where $v=pred[w]$ at the same time. After the scan $v$ knows its bit and the bit of its successor and can hence decide whether the successor becomes inactive in this round.

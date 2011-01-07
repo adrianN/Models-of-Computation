@@ -89,7 +89,7 @@ Choose $C$ to be $2\log n$ to get the result.
 \paragraph{Remark.} The algorithm may be fast in expectation, but that doesn't guarantee an acceptable running time with high probability. We would like to have a good running time with probability at least $1-n^{-c}$.
 
 \begin{thm} $P(T> c\log n) = O(n^{2-c})$\end{thm}
-\begin{pr} Let $i=c\codt \log n -1$. $T>i$ implies $E_i\geq 1$, so $P(T > i) \leq 2|E_1| \cdot 2^{-c\log n} = n^{2-c}$.\end{pr}
+\begin{pr} Let $i=c\cdot \log n -1$. $T>i$ implies $E_i\geq 1$, so $P(T > i) \leq 2|E_1| \cdot 2^{-c\log n} = n^{2-c}$.\end{pr}
 
 \paragraph{Remark.} \begin{enumerate}
 \item We don't need to draw real numbers. It is sufficient to communicate $O(\log n)$ bits (exercise). 

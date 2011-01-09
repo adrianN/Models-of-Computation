@@ -1,7 +1,3 @@
-\section{External Memory Sorting}
-
-See also Prof. Mehlhorn's notes on the website.
-
 \subsection{Lower Bound for Permuting/Sorting}
 
 The input is $N$ items stored in $N/B$ disk blocks. We want to compute a permutation on the input and store it in the same blocks in which the input was stored. We make the following assumptions:
@@ -71,6 +67,6 @@ This looks pretty similar to the upper bound from the analysis of Mergesort.
 
 \subsection{Blubb}
 
-Recall the list ranking algorithm from section bla. We want to find an external memory algorithm for the problem. We use the notation from Prof. Mehlhorn's script.
+Recall the list ranking algorithm from section InsertRefHere. We want to find an external memory algorithm for the problem. We use the notation from Prof. Mehlhorn's script.
 
 \paragraph{Phase 1} Scan over the list (in the order in which elements are stored on disk, call this order $L$) and choose a random bit for each item. Item $w$ generates the triple (prod[v], w, bit of w). Proceed to sort the triples lexicographically, call the resulting sequence $T$. Now scan over $L$ and $T$ in lock-step fashion, i.e., scan item $v$ of $L$ and item (v,w,bit of w) where $v=pred[w]$ at the same time. After the scan $v$ knows its bit and the bit of its successor and can hence decide whether the successor becomes inactive in this round.

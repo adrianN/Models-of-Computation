@@ -1,0 +1,69 @@
+\section{Van Emde-Boas Trees}
+
+Take a complete binary tree with height $h$ and $2^h$ leaves. Split the tree in two parts of height $h/t$ and $h/b$ such that $h_t +1 + h_b$. $h_b$ is the largest $2^k-1$ less than $h$ ($h_t$ could be zero). The leaves of the top tree are the roots of the bottom forest. 
+
+Now apply the same procedure recursively for the top and bottom trees. Number the nodes in top and bottom trees contigously. The numbering corresponds to the layout in memory.
+
+Figuring out the arithmetic to go to children/parents is left as an exercise for the reader.
+
+\begin{thm} Searching in a tree of size $N$ in van-Emde-Boas layout incurs 
+\[O(\frac{\log N}{\log B})\]
+
+IOs.
+\end{thm}
+
+Note that the layout is independent of $B$.
+
+\begin{pr} Let $l$ be maximal such that trees of height $2^l-1$ fit into a memoryblock $B$. Let $L=2^l-1$. We make two observations.
+\begin{enumerate}
+\item If a tree fits into a memory block it is stored in at most two blocks.
+\item Search follows a path of length $\log N$ and hence passes through $(\log N)/(2^{l}-1)$ "small trees".
+\item A tree of height $L$ has size roughly $2^{L+1}$. Therefore we have
+\[2^{2^l} \leq B \leq 2^{2^{l+1}}\]
+Taking logarithms we get 
+\[2^l \leq \log B \leq 2^{l+1}\]
+
+Thus $2^l-1= \Theta(\log B)$.
+\end{enumerate}
+\end{pr}
+
+\section{Cache Replacement Strategies}
+
+When a cache line is moved into cache, we need to evict one of the lines from the cache (if the cache is full). Evicting the line where the next access is furthest in the future is optimal, but this is not computable.
+
+There are several other strategies: LRU, he line for which the last access is furthest in the past, LFU, The line that is used least frequently, etc.
+
+\begin{thm}[Sleater/Tarjan, 83] Cache of size $M_{LRU}$ under LRU policy, $M_{OPT}$ under the optimal policy. Then 
+for any sequence of accesses
+
+\[F_{LRU} \leq \frac{M_{LRU}}{M_{LRU}-M_{OPT}+1} \cdot F_{OPT}+ M_{OPT}\]
+
+Where $F$ is the number of page faults
+\end{thm}
+
+\begin{pr} Let $s$ be our sequence of accesses. Consider a subsequence $t$ in which LRU incurs $f$ page faults; $f\leq m_{LRU}$; $t$ does not include the first access. Let $x$ be the cache line access just before $t$. We distinguish several cases:
+
+\begin{enumerate}
+\item Within $t$, LRU incurs two page faults with the same cache line, say on element $y$. 
+
+Between the two page faults there must have been at least $M_{LRU}$ many accesses to other cache lines, distinct from the cache line of $y$. Otherwise $y$ would not have been evicted. As the optimal strategy has only $M_{OPT}$ memory available, it must have incurred at least $M_{LRU}-M_{OPT}+1$ many cache misses.
+
+\item LRU incurs a cache fault on $x$.
+
+Again we must have had at least $M_{LRU}$ many accesses to cache lines different from the cache line of $x$. By the same argument as above, $M_{OPT}$ must have incurred at least $M_{LRU}-M_{OPT}+1$ many cache misses.
+
+\item Neither case one or two.
+
+Then accesses to at least $f$ different cache lines all different from $x$ must have occurred. This means the optimal strategy incurs $\geq f-M_{OPT}+1$ page faults.
+\end{enumerate}
+
+We can divide the sequence into phases such that LRU has $M_{LRU}$ many faults in each phase, except the first. Then we can count the number of page faults for the optimal strategy by the above argument. The result follows.
+\end{pr}
+
+\section{Cache Oblivious Sorting -- Funnel Sort}
+
+We will work under the "tall cache assumption": $M/B>> B$, in particular $M\geq B^{2.5}$. The results stay true even when $M\geq B^{1+\gamma}$.
+
+Funnel Sort works by splitting the input of size $N$ into $N^{1/3}$ sets of size $N^{2/3}$ and sorting the sets recursively. It uses a $N^{1/3}$ merger to merge the sorted sequences back together.
+
+A $k$-merger, $k\in \N$ is a recursive structure that consists of a $\sqrt k$ merger ("top merger") into which further $\sqrt{k}$ mergers feed through buffers of size ($k^2$) each, c.f. van Emde-Boas layout.

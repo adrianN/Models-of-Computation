@@ -65,8 +65,3 @@ This looks pretty similar to the upper bound from the analysis of Mergesort.
 \begin{pr} We do a case distinction. If $\log \frac{Me}{B} > \frac 2B \log \frac{2N}{B}$ the first part of the minimum can be derived from the previous bound on $T$. Otherwise $N$ can be derived.
 \end{pr}
 
-\subsection{List ranking}
-
-Recall the list ranking algorithm from section InsertRefHere. We want to find an external memory algorithm for the problem. We use the notation from Prof. Mehlhorn's script.
-
-\paragraph{Phase 1} Scan over the list (in the order in which elements are stored on disk, call this order $L$) and choose a random bit for each item. Item $w$ generates the triple (prod[v], w, bit of w). Proceed to sort the triples lexicographically, call the resulting sequence $T$. Now scan over $L$ and $T$ in lock-step fashion, i.e., scan item $v$ of $L$ and item (v,w,bit of w) where $v=pred[w]$ at the same time. After the scan $v$ knows its bit and the bit of its successor and can hence decide whether the successor becomes inactive in this round.

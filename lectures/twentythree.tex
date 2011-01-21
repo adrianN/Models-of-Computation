@@ -1,0 +1,28 @@
+Next week lecture in DFKI-Visualization Center, D32
+
+\section{Priority Queues}
+
+See slides and paper on homepage.
+
+\section{Breadth-First Search}
+
+Recall the sequential version of BFS
+
+\begin{lstlisting}
+BFS(s)
+Q = {s}
+s is reached
+do 
+	$L_{next}$ = $\emptyset$
+	for all $v\in Q$
+		do for all vertices $u$ adjacent to $v$
+			if $u$ unreached
+				$L_{next}$ += u
+				u becomes reached
+	Q = $L_{next}$
+until $Q=\emptyset$
+\end{lstlisting}
+
+In external memory we have the graph as an array $V$ of pointers into the array of edges $E$ such that $V[i]$ points to the list of adjacent edges of node $i$.
+
+Iterating over the adjacent edges of $v$ takes $O(1+\deg(v)/B)$ IOs. Checking if $u$ is reached takes an IO too. So this takes $O(n+m)$ IOs in the worst case.

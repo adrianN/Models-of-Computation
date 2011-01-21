@@ -62,8 +62,10 @@ We can divide the sequence into phases such that LRU has $M_{LRU}$ many faults i
 
 \section{Cache Oblivious Sorting -- Funnel Sort}
 
+From a paper by Frigo, Leiserson,\ldots '98.
+
 We will work under the "tall cache assumption": $M/B>> B$, in particular $M\geq B^{2.5}$. The results stay true even when $M\geq B^{1+\gamma}$.
 
 Funnel Sort works by splitting the input of size $N$ into $N^{1/3}$ sets of size $N^{2/3}$ and sorting the sets recursively. It uses a $N^{1/3}$ merger to merge the sorted sequences back together.
 
-A $k$-merger, $k\in \N$ is a recursive structure that consists of a $\sqrt k$ merger ("top merger") into which further $\sqrt{k}$ mergers feed through buffers of size ($k^2$) each, c.f. van Emde-Boas layout.
+A $K$-merger, $K\in \N$ is a recursive structure that consists of a $\sqrt K$ merger ("top merger") into which further $\sqrt{K}$ mergers feed through buffers of capacity $K^2$ each. The total size of buffers is $K^{5/2}$. 

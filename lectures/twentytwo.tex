@@ -22,7 +22,7 @@ do K times
 	$K^2$ outputs are produced or output buffer is full
 \end{lstlisting}
 
-The Outermost merger is a $N^{1/3}$-merger. In each of the $N^{1/3}$ rounds it produces $N^{2/3}$ outputs ($N$ in total). Also each input consumes $N^{2/3}$ inputs.
+The outermost merger is a $N^{1/3}$-merger. In each of the $N^{1/3}$ rounds it produces $N^{2/3}$ outputs ($N$ in total). Also each input consumes $N^{2/3}$ inputs.
 
 \begin{lem}
 If a $J$-merger is invoked $l$ times, it consumes at least $l(J^2)$ inputs from each input line and hence $l\cdot J^3$ inputs.
@@ -43,7 +43,7 @@ Each $\sqrt{J}$ merger is invoked $l'$ times, $l'=l\cdot J$, because for each in
 \begin{pr} We need to prove that the input buffers consume $\leq \frac 34 M$. The space for the buffer is
 
 \begin{align*}
-\leq J\cdot B &\leq (\frac{M}{4c})^{5/2}\cdot \sqrt{M}\\
+\leq J\cdot B &\leq \left(\frac{M}{4c}\right)^{2/5}\cdot \sqrt{M}\\
 	&\leq \frac M2
 \end{align*}
 
@@ -86,7 +86,7 @@ $J$-mergers
 
 \begin{thm} The total IO-cost of moving $N$ elements through an $N^{1/3}$ merger is
 
-\[O(\frac NB \cdot \frac{\log N^{1/3}}{\log J}) = O(\frac NB \cdot \frac{\log (N/B)}{\log (M/B)})\]
+\[O\left(\frac NB \cdot \frac{\log N^{1/3}}{\log J}\right) = O\left(\frac NB \cdot \frac{\log (N/B)}{\log (M/B)}\right)\]
 \end{thm}
 
 The last equality holds by our assumptions on $J$:
@@ -107,5 +107,5 @@ The total leaf cost is $N/B$
 \begin{align*}
 C(N) &= \frac NB \frac{\log (N/B)}{\log (M/B)} + N^{1/3} (\frac{N^{2/3}}{B} \cdot \frac{\log N^{2/3}B}{\log (M/B)} + \ldots\\
 \intertext{The $2/3$ in $\log N^{2/3}$ moves out and we see a geometric series, so }
-&=O(\frac{1}{B}\cdot \frac{\log (N/B)}{\log (M/B)}
+&=O\left(\frac{N}{B}\cdot \frac{\log (N/B)}{\log (M/B)}\right)
 \end{align*}

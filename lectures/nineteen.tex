@@ -18,48 +18,48 @@ The current state of the algorithm can be described by three pieces of informati
 \item Order of the elements in each non-empty disk block.
 \end{enumerate}
 
-There are $N!$ distinct final states, one for each possible permutation. We partition these states into equivalence classes. Two states are equivalent if they agree in 1) and 2), i.e. the same blocks are in memory and the contents of the disc blocks are equal (but not necessarily in the same order).
+There are $N!$ distinct final states, one for each possible permutation. We partition these states into equivalence classes. Two states are equivalent if they agree in 1) and 2), i.e. the same blocks are in memory and the contents of the disk blocks are equal (but not necessarily in the same order).
 
 The size of the equivalence classes is
 
 \[\geq \frac{N!}{(B!)^{N/B}}\]
 
-($\geq$ since we don't consider the contents of the main memory in the calculation). Let $C_t$ be tho number of reachablo equivalence classes in $t$ I/O operations. $C_0=1$ as only the initial state is reachable without reading or writing anything. For $C_{t+1}$ we get:
+($\geq$ since we don't consider the contents of the main memory in the calculation). Let $C_t$ be the number of reachable equivalence classes in $t$ I/O operations. $C_0=1$ as only the initial state is reachable without reading or writing anything. For $C_{t+1}$ we get:
 
 \[C_{t+1} \leq \begin{cases}
 C_t \cdot \frac{2N}{B}	& \text{when reading}\\
-C_t \cdot \frac{2N}{B} \cdot \choose{M}{B}	& \text{when writing}
+C_t \cdot \frac{2N}{B} \cdot {{M}\choose{B}}	& \text{when writing}
 \end{cases}\]
 
-Assume that the algorithm never uses more than $T$ I/Os. To to able to reach every equivalence class we need
+Assume that the algorithm never uses more than $T$ I/Os. To be able to reach every equivalence class we need
 
-\[\frac{N!}{(B!)^{N/B}} \leq C_T \leq \frac{2N}{B})^T \choose{M}{B}^{T/2}\]
+\[\frac{N!}{(B!)^{N/B}} \leq C_T \leq \left(\frac{2N}{B}\right)^T {{M}\choose{B}}^{T/2}\]
 
 (assuming we write as often as we read, it's impossible to write more often due to our assumptions). We use $(x/e)^x\leq x! \leq x^x$ to modify the inequality:
 
 \begin{align*}
-\frac{N!}{(B!)^{N/B}} \leq (\frac{2N}{B})^T \choose{M}{B}^{T/2}\\
-	&\leq (\frac{2N}{B})^T (\frac{M^B}{B!})^{T/2}\\
-	&\leq (\frac{2N}{B})^T (\frac{Me}{B})^{B \cdot T/2}
+\frac{N!}{(B!)^{N/B}} \leq \left(\frac{2N}{B}\right)^T {{M}\choose{B}}^{T/2}\\
+	&\leq \left(\frac{2N}{B}\right)^T \left(\frac{M^B}{B!}\right)^{T/2}\\
+	&\leq \left(\frac{2N}{B}\right)^T \left(\frac{Me}{B}\right)^{B \cdot T/2}
 \end{align*}
 
 and the other side:
 
-\[\frac{N}{e}^N (\frac{1}{B})^N \leq \frac{N!}{(B!)}^{N/B}\]
+\[\frac{N}{e}^N \left(\frac{1}{B}\right)^N \leq \frac{N!}{(B!)}^{N/B}\]
 
 Now we take logarithms and solve for $T$ to get:
 
-\[\frac{2N}{B} \log \frac{N}{eB} \leq T\frac{2}{B} \log \frac{2N}{b}  T \log \frac{Me}{B}\]
+\[\frac{2N}{B} \log \frac{N}{eB} \leq T\frac{2}{B} \log \frac{2N}{b} + T \log \frac{Me}{B}\]
 
 hence
 
 \[T\geq \frac{2N}{B} \cdot \frac{\log \frac{N}{eB}}{\log \frac{Me}{B} + \frac{2}{B} \log \frac{2N}{B}}\]
 
-This looks pretty similar to the upper bound from the analysis of Mergesort.
+This looks pretty similar to the upper bound from the analysis of merge sort.
 
 \begin{thm} The number of I/O-operations in the worst case is 
 
-\[\Omega(\min \left(\frac{N}{B} \cdot \frac{\log \frac{N}{eB}}{\log \frac{Me}{B}}, N\right))\]
+\[\Omega\left(\min \left(\frac{N}{B} \cdot \frac{\log \frac{N}{eB}}{\log \frac{Me}{B}}, N\right)\right)\]
 \end{thm}
 
 \begin{pr} We do a case distinction. If $\log \frac{Me}{B} > \frac 2B \log \frac{2N}{B}$ the first part of the minimum can be derived from the previous bound on $T$. Otherwise $N$ can be derived.

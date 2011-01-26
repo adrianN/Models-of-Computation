@@ -4,7 +4,7 @@ Recall the list ranking algorithm from section InsertRefHere, that computes the 
 
 We already saw the parallel solution and want to find an external memory solution.
 
-\paragraph{Phase 1} Scan over the list (in the order in which elements are stored on disk, call this order $L$) and choose a random bit for each active item. Item $w$ generates the triple (pred[v], w, bit of w). Proceed to sort the triples lexicographically, call the resulting sequence $T$. Now scan over $L$ and $T$ in lock-step fashion, i.e., scan item $v$ of $L$ and item (v,w,bit of w) where $v=pred[w]$ at the same time. After the scan $v$ knows its bit and the bit of its successor and can hence decide whether the successor becomes inactive in this round.
+\paragraph{Phase 1} Scan over the list (in the order in which elements are stored on disk, call this order $L$) and choose a random bit for each active item. Item $w$ generates the triple (pred[w], w, bit of w). Proceed to sort the triples lexicographically, call the resulting sequence $T$. Now scan over $L$ and $T$ in lock-step fashion, i.e., scan item $v$ of $L$ and item (v,w,bit of w) where $v=pred[w]$ at the same time. After the scan $v$ knows its bit and the bit of its successor and can hence decide whether the successor becomes inactive in this round.
 
 Each $v$ sends a message to its predecessor, telling it whether it stays active or becomes inactive.
 
@@ -14,13 +14,13 @@ Items that become inactive send messages to their successors, and stores the cur
 
 \begin{lem} List ranking can be done with $O(\log n \cdot Sort(n))$ IOs. More carefully analysed:
 
-\[\sum_{i=0}^{O(\log n)} \text{Scan}(n) + \text{Sort}(\frac{n}{(3/4)^i})\]
+\[\sum_{i=0}^{O(\log n)} \text{Scan}(n) + \text{Sort}\left(\frac{n}{(4/3)^i}\right)\]
 \end{lem}
 
-Let $a=3/4$, then we can write
+Let $a=4/3$, then we can write
 
 \begin{align*}
-\quad &\sum_{i\geq 0}\text{Sort}(\frac{n}{a^i})\\
+\quad &\sum_{i\geq 0}\text{Sort}\left(\frac{n}{a^i}\right)\\
 =& \sum_{i\geq 0} \frac{n}{aiB}\cdot \frac{\log \frac{n}{a^iB}}{\log (M/B)}\\
 \leq & \sum_{i\geq 0} \frac{1}{a^i} \cdot \text{Sort(n)}\\
 =& O(\text{Sort}(n))
@@ -32,7 +32,7 @@ Obviously the list ranking algorithm can be implemented in terms of message exch
 
 \section{Simulating a PRAM}
 	
-Recall, a PRAM has $n$ processors, each with a constant number of registers. In particular each has an adress register -- $R$. It further has a global memory $M$, also of size $n$. In each PRAM step each processor can do some lokal calculations and read or write to $M[R_i]$.
+Recall, a PRAM has $n$ processors, each with a constant number of registers. In particular each has an adress register -- $R$. It further has a global memory $M$, also of size $n$. In each PRAM step each processor can do some local calculations and read or write to $M[R_i]$.
 
 In the external memory model we have just a single CPU. We store $M$ on disk and have an array $P$ that contains the registers of processor $i$ at location $i$. We simulate a step of the PRAM by scanning $P$ and performing the local computations followed by scanning over $P$ again to generate tuples $(R_i, \text{Read/Write}, i, v_i)$ that we then sort. Lastly we scan over the memory and the sorted list of tuples and do the necessary memory updates. For each read at position $j$ we generate a tuple $(i,M[j])$ that we deliver to processor $i$.
 

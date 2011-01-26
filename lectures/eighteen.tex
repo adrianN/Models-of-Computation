@@ -9,9 +9,9 @@
 \caption{Diagram showing the memory hierarchy of a modern computer architecture. From \href{http://en.wikipedia.org/wiki/File:ComputerMemoryHierarchy.svg}{Wikipedia}}
 \end{figure}
 
-CPUs run at 1 Ghz, $10^9$ instructions/sec whereas disks rotate at 6000 - 10000 rpm ( ~10 ms per rotation). Hence it takes about 10 ms until one can read the first byte from disk. The ratio of 10 ms to one cpu cycle is about $10^7$. Note that $10^7$s are roughly 100 days.
+CPUs run at 1 Ghz, $10^9$ instructions/sec whereas disks rotate at 6000 - 10000 rpm ( ~10 ms per rotation). Hence it takes about 10 ms until one can read the first byte from disk. The ratio of 10 ms to one CPU cycle is about $10^7$. Note that $10^7$s are roughly 100 days.
 
-Typically the transfer rate from disk to memory is 50 MBytes/sec: in 10 ms one can move 500 kBytes. Thus in 10 ms one can read 1 Byte, in 20 ms it is possible to read 500 kBytes. This  suggests that reading data blockwise is the moste efficient access method.
+Typically the transfer rate from disk to memory is 50 MBytes/sec: in 10 ms one can move 500 kBytes. Thus in 10 ms one can read 1 Byte, in 20 ms it is possible to read 500 kBytes. This  suggests that reading data blockwise is the most efficient access method.
 
 \subsection{Machine model (Aggarwal/Vitter)}
 
@@ -49,7 +49,7 @@ rounds. In each round we read and write all elements, hence $2N/B$ IO operations
 
 \begin{thm} We can sort $N$ items with 
 
-\[2\frac NB \rup{\log_{M/B} \frac NM})\]
+\[2\frac NB \rup{\log_{M/B} \frac NB}\]
 
 IOs. With $D$ parallel disks, we can sort with
 

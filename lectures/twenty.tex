@@ -36,4 +36,4 @@ Recall, a PRAM has $n$ processors, each with a constant number of registers. In 
 
 In the external memory model we have just a single CPU. We store $M$ on disk and have an array $P$ that contains the registers of processor $i$ at location $i$. We simulate a step of the PRAM by scanning $P$ and performing the local computations followed by scanning over $P$ again to generate tuples $(R_i, \text{Read/Write}, i, v_i)$ that we then sort. Lastly we scan over the memory and the sorted list of tuples and do the necessary memory updates. For each read at position $j$ we generate a tuple $(i,M[j])$ that we deliver to processor $i$.
 
-\begin{thm} Each CRCW PRAM step takes Sort(n) IOs.\end{thm}
+\begin{thm} Simulating one CRCW PRAM step takes Sort(n) IOs.\end{thm}

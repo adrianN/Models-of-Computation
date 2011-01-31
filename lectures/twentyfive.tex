@@ -1,0 +1,79 @@
+\section{Sorting by Distribution}
+
+Select a sample $S$ of size $d$, sort it and use the order to define $d+1$ buckets. We want to choose the sample such that every bucket gets approximately the same number of elements.
+
+There are several ways to choose the sample. 
+
+\subsection{Deterministic Sample Selection}
+
+We split the input into $\frac ns$ groups of size $s$ and sort each one of them. We choose the perfect sample of size $s/d$ from each group (the "crosses"), i.e. take elements at positions $j\cdot d$, $1\leq j\leq s/d$. Taking all of these elements together gives us $n/s \cdot s/d$ elements. We sort them and take elements and take the $d$ elements at positions $j\cdot n/d^2$, $1\leq j \leq d$ (the "pivots").
+
+\paragraph{Analysis} Consider two adjacent elements in the final sample. 
+
+Group $i$ contributes $l_i$ crosses that lie in the closed interval defined by the pivots considered. Then $\sum l_i \approx \frac{n}{d^2}$. When we have $l_i$ crosses in the group, there come at least $(l_i - 1)\cdot d$ and at most $(l_i +1) \cdot d$ elements from group $i$ into the interval defined by the pivots. Thus the number of elements $m$ in the input that belong to thi interval is
+
+\[\sum_{i=1}^{n/s} (l_i-1)\cdot d \leq m \leq \sum_{i=1}^{n/s} (l_i+1)\cdot d\]
+
+This simplifies to 
+
+\[\frac nd - \frac ns d \leq m \leq \frac nd + \frac ns d\]
+
+Choosing $s= 2d^2$ we get
+
+\[\frac{n}{2d} \leq m \leq \frac{3n}{2d}\]
+
+
+\subsection{Randomized Sample Selection}
+
+\begin{lem} Input size $n$. Choose a random sample of size $(d+1)(k-1)+d = dk+k-1$ sort it and take evry $k$-th element as pivot. Then the probability that some interval that is defined by adjacent pivots contains more than $L$ elements (=event $X$) of input is small, i.e. $P(X) \leq \frac{1}{n^c}$, if the following assumptions hold:
+
+\begin{itemize}
+\item $L=x\frac{n}{d+1}$
+\item $n-dk-k-L \geq n/2$
+\item $\frac{2ex}{e^x} \leq \frac 1e$
+\item $k = (c+2)\ln n$
+\end{itemize}
+
+\end{lem}
+
+\begin{pr}
+
+If $X$ happens then there is a contigous subsequence of sorted input such that less than $k$ elements are chosen as pivot candidates from this subsequence. Otherwise one of the elements in the subsequence will become a pivot. There are at most $n$ choices where a subsequence begins.
+
+\[P(X) \leq n\cdot \sum_{i=0}^{k-1} p_i\]
+
+where $p_i$ is the probability that we choose exactly $i$ out of $l$.
+
+\[p_i = \frac{\ncr{L}{i}\ncr{n-L}{dk+k-1-i}}{\ncr{n}{dk+k-1}}\]
+
+Let $\fp ni = n\cdot (n-1) \cdot \ldots (n-i+1)$.
+
+In KM's notes we estimate it exactly. Here we simplify a bit and bound
+
+\begin{align*}
+\frac{\ncr{L}{k}\ncr{n-L}{dk}}{\ncr{n}{dk+k}} &= \frac {\fp Lk  (dk+k)! (n-L)! (n-dk-k)!}{k! (dk)! n! (n-L-dk)! }\\
+\intertext{we use $k! \geq (k/e)^k$}
+	&\leq (\frac{eL}{k})^k ((d+1)k)^k \frac{\fp{n-dk-k}{L}}{\fp nL (n-dk-k-L)^k}\\
+	&\leq\left(\frac{eL(d+1)k}{k(n-dk-k-L)}\right)^k \cdot \frac{\fp{n-dk-k}{L}}{\fp nL}\\
+\intertext{Second assumption}
+	&\leq (e\cdot 2x)^k \cdot \frac{\fp{n-dk-L}{L}}{\fp nL}\\
+\intertext{Since $(a-i)/(b-i) \leq a/b$}
+	&\leq (e\cdot 2x)^k (1-\frac{k(d+1)}{n})^L\\
+\intertext{As $(1-z)^L = \exp{L\ln (1-z)} \leq \exp{-zL}$}
+	&\leq (2ex)^k e^{-k(d+1)L/n}\\
+\intertext{First assumption}
+	&\leq (2ex)^k e^{-kx}\\
+	&= \left(\frac{2ex}{e^x}\right)^k
+\intertext{Third, fourth assumption}
+	&= \leq \left(\frac 1e\right)^{(c+2)\ln n}\\
+	&= \frac{1}{n^{c+2}}
+\end{align*}
+
+Plugging this into the sum for $P(X)$ gives us the result:
+
+\[P(X) \leq n\cdot \sum_{i=0}^{k-1} p_i \leq n^2 \frac{1}{n^{c+2}} = \frac{1}{n^C}\]
+\end{pr}
+
+
+
+

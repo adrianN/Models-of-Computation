@@ -1,0 +1,64 @@
+While examining a new node $u$ it is sufficient to check whether it is contained in the two previous layers of the BFS.
+
+\begin{lem} It suffices to check $u\not \in L_{i-1} \cup L_{i-2}$.\end{lem}
+
+\begin{pr} No edge can jump over a layer, as we would have examined it before.\end{pr}
+
+Hence an alternative way to construct $L_i$ is as follows:
+
+\begin{lstlisting}
+for all $v\in L_{i-1}$
+	for all edges $vu$ do
+		odd $vu$ to $L_i$
+remove duplicates from $L_i$ and remove all vertices in $L_{i-1}, L_{i-2}$ by sorting and scanning all sets in parallel
+\end{lstlisting}
+
+\paragraph{Analysis} Let $l_i = \sum_{v\in L_i} \deg{v}$ be the size of $l_i$ before removing duplicates. The cost of removing duplicates and vertices from $L_{i-1}$ and $L_{i-2}$ is
+
+\[\leq \text{Sort}(l_i) + \text{Scan}(l_i) + \text{Scan}(l_{i-1}) + \text{Scan}(l_{i-2})\]
+
+(smaller because $L_{i-1}$ and $L_{i-2}$ are already duplicate free). The total cost of all phases is
+
+\[\leq \sum_{i} \text{Sort}(l_i) + 3\cdot \text{Scan}(l_i) = O(\text{Sort}(\sum_i l_i) = O(\text{Sort}(m))\]
+
+Three times Scan($l_i$), because one layer is considered thrice.
+
+\begin{thm} The number of IOs in the revised algorithm is $O(n+\text{Sort}(m))$\end{thm}
+
+This is better than $O(n+m)$, as we divide $m$ by B. We can further improve the algorithm for graphs with small diameter. An alternative way to count IOs is to scan once over all edges per layer.
+
+\begin{thm} No more than 
+
+\[O(\text{Sort}(m)+\text{Scan}(m) \cdot \diam{G}\]
+
+IOs are incurred for a BFS
+\end{thm}
+
+This suggests to preprocess the graph into chunks of small diameter. The division can be accomplished by calculating a spanning tree on the graph and doing an euler tour on it. Splitting the euler into $k$ parts of length $2n/k$ each and assigning vertices that belong to more than one part arbitrarily gives a set of $k$ chunks of diameter at most $2n/k$. Note that the lower bound is $n/k$ on the line graph.
+
+During the BFS we can then store the graph in three parts:
+
+\begin{itemize}
+\item unreached chunks (no vertex has been reached yet)
+\item active chunks (at least one vertex reached, but not all processed)
+\item finished chunks (completely processed)
+\end{itemize}
+
+We make the following changes to the previous algorithm: We scan only over the edges of the active chunks. When the first vertex in a chunk is reached, we move the chunk from the unreached part to the active part. Edges in the active graph are stored ordered by vertex number. At the end of each round we know which subgraphs to add to the active part. Fetching them from disk costs $(1+\text{Scan}(|H|))$ per subgraph $H$. We sort the union of the subgraphs added in $\text{Sort}(\sum |H_i|)$ and scan the active graph in parallel with the new subgraphs to merge. Lastly, when a chunk is completed we move it away to the finished chunks.
+
+\begin{lem} A chunk stays active for $d$ rounds, where $d$ is the diameter of the chunk.
+\end{lem}
+
+Hence every edge of the chunk is scanned over just $d$ times. This is an improvement, because now $d$ is not the diameter of the graph, but the diameter of the chunk instead; a number which we control.
+
+There is a conflict between large chunks and small chunks. Large chunks require fewer IOs for moving chunks around, but the number of scans over their edges increases.
+
+
+\begin{thm} The total number of IOs is
+
+\[O(\text{sort}(m) + \frac nk + \text{scan}(m) + k\cdot \text{scan}(m))\]
+
+with $k= sqrt{n}/\text{Scan}(m) = \sqrt{NB/m}$ this becomes
+
+\[O(\text{Sort}(m) + \qrt{nm/b})\]
+\end{thm}

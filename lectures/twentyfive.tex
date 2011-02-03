@@ -51,7 +51,7 @@ Let $\fp ni = n\cdot (n-1) \cdot \ldots (n-i+1)$.
 In KM's notes we estimate it exactly. Here we simplify a bit and bound
 
 \begin{align*}
-\frac{\ncr{L}{k}\ncr{n-L}{dk}}{\ncr{n}{dk+k}} &= \frac {\fp Lk  (dk+k)! (n-L)! (n-dk-k)!}{k! (dk)! n! (n-L-dk)! }\\
+\frac{\ncr{L}{k}\ncr{n-L}{dk}}{\ncr{n}{dk+k}} &= \frac{\fp Lk  (dk+k)! (n-L)! (n-dk-k)!}{k! (dk)! n! (n-L-dk)! }\\
 \intertext{we use $k! \geq (k/e)^k$}
 	&\leq (\frac{eL}{k})^k ((d+1)k)^k \frac{\fp{n-dk-k}{L}}{\fp nL (n-dk-k-L)^k}\\
 	&\leq\left(\frac{eL(d+1)k}{k(n-dk-k-L)}\right)^k \cdot \frac{\fp{n-dk-k}{L}}{\fp nL}\\
@@ -65,7 +65,7 @@ In KM's notes we estimate it exactly. Here we simplify a bit and bound
 	&\leq (2ex)^k e^{-kx}\\
 	&= \left(\frac{2ex}{e^x}\right)^k
 \intertext{Third, fourth assumption}
-	&= \leq \left(\frac 1e\right)^{(c+2)\ln n}\\
+	& \leq \left(\frac 1e\right)^{(c+2)\ln n}\\
 	&= \frac{1}{n^{c+2}}
 \end{align*}
 

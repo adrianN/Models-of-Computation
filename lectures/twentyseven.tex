@@ -1,0 +1,58 @@
+\subsection{Sorting by Distribution Sort}
+
+We will do repeated $d$-way splitting ($d$ will be fixed later) until we have subproblems of size $\leq N/P$. Problems of that size are solved by a single processor.
+
+For a problem of size $S$ a single processor needs 
+
+\[O(\frac SB \cdot \log_{M/B}\frac SB \leq \frac SB \log_{M/B} \frac{N}{PB})\]
+
+we use all $P$ processors in parallel to solve the leaf problems. In total that needs 
+
+\[O(\frac{N}{PB} \log_{M/B} \frac{N}{PB})\]
+
+IOs. For splitting we choose pivots as described in section \ldots, i.e. choosing $Cd\log N$ elements randomly, sort (on one processor -- choose $d$ sufficiently small), and take every $C\log N$-th element. We need to bound the number of splits. Assume the maximal size of a bucket is $x\cdot N/d$. We split for the following amount of rounds:
+
+\[\log_{d/x} \frac{N}{N/P} = \frac{\log P}{\log d/x} \stackrel{{d\geq x^2}}{\leq} 2\frac{\log P}{\log d}\]
+
+Recall the remark about partitioning $s_i$. Here we do the same to split the buckts. We allot $p_i$ processors such that
+
+\[\frac{s_i}{p_i} \lqq \frac NP, \qquad p_i = \]
+
+Then 
+
+\[\sum p_i \leq \sum_i (\frac{s_iP}{N +1}) \leq 2P\]
+
+And since the bound for partitioning applies and each round has cost 
+
+\[O(\frac{N}{PB} + d\log P)\]
+
+we get:
+
+\begin{thm} The total cost is 
+
+\[O(\frac{N}{PB} \log _{M/B} \frac{N}{PB} + \log_dP (\frac{N}{PB} + d\log P))\]\end{thm}
+
+We need to consider a good value for $d$ to get something $O(N/(PB) \log _{M/B}N/B)$.
+
+
+We needed the following assumptions on $d$
+\begin{enumerate}
+\item Number of splits requires: $d\geq x^2$
+\item $d\leq M/B$
+\item Sorting pivots requires: 
+
+\[\frac{Cd\log N}{B} \log _{M/B} \frac{Cd\log N}{B} \leq \frac{N}{PB}\]
+
+which is equivalent to
+
+\[d\leq \frac{N}{P\log N \cdot \log_{M/B} N/B}\]
+\item $d\leq \frac{N}{PB \log P}$
+\end{enumerate}
+
+We set $d$ to be the minimum of the upper bounds. Then we get
+
+\[\frac{N}{PB}(\log_{M/B} \frac{N}{PB} + \log d P)\]
+
+\begin{thm} If $P\leq \min(\frac{N}{x^2\log^2N}, \sqrt{\frac{N}{x^2B}})$, and $\log_d P = O(\ldots)$, then the complexity is 
+
+\[O(\frac{N}{PB} \log_{M/B} \frac{N}{B})\]

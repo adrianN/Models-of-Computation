@@ -1,0 +1,88 @@
+\section{Multicores}
+
+A multicore CPU is a parallel machine on a chip. The $P$ cores have a shared memory ("of infinite size") and private memory of bounded size $M$. The difference to a PRAM is that accessing the shared memory is very expensive compared to accessing the private memories. Memory is transferred in blocks of size B.
+
+In one time step each processor can transfer only one block between shared memory and private cache.
+
+We count the number of IOs, as in external memory computation.
+
+\subsection{Parallel Prefix}
+
+This is a combination of the prefix sum algorithms we have seen for PRAM and externel memory.
+
+We have $N$ items that are stored contiguously in shared memory. 
+
+\begin{thm} The prefix sum can be computed with 
+
+\[O(\frac{N}{PB} + \log P)\]
+
+IOs.
+\end{thm}
+
+\begin{pr} We operate in three phases. First we divide the input into $P$ chunks of size $N/P$. In the first phase each processor computes the sum of the elements in its chunk. This takes scan time $N/(PB)$ IOs.
+
+In the second phase we compute the prefix of the sums in PRAM style. This takes $O(\log P)$ IOs.
+
+During the last phase we need combine the prefix sum we computed in phase two with the values in the chunks to get the prefix sum of the whole sequence. This requires a scan, again $N/(PB)$ IOs.
+\end{pr}
+
+\paragraph{Remark} If we want to calculate the prefix sum of $B$ arrays, we can do phase 2 in parallel. This assumes that each processor stores its $B$ inputs in one block.
+
+\subsection{Partitioning a Set into Buckets}
+
+We want to distribute an input of $n$ elements according to $d\leq M/B$ pivots. Each processor has the pivots in private memory.
+
+\begin{thm} Partitioning can be done with
+\[O(\frac{n}{pb} + \frac{d}{B}\log P + d\log B)\]
+
+IOs.
+\end{thm}
+
+Again we start by splitting the input into chunks.
+
+In the first phase of the algorithm each processor $i$ determines the number $n_{ij}$ of its elements that go into bucket $j$. We then want to concatenate the buckets of each processor. To know where the concatenated buckets go, we need to compute prefix sums.
+
+In the second phase we compute the numbers 
+
+\[s_{ij} = \underbrace{\sum_{k<i} n_{kj}}_{\text{same bucket, prev. CPUs}} + \underbrace{\sum_{l<j}\sum_i n_{il}}_{\text{previous buckets}}\] 
+
+\begin{verbatim}
+
+buckets     ->          j
+           |    -------------------
+processors v    |  sij   |  
+                |        |
+            i   |      |nij
+                |      |
+\end{verbatim}
+
+We compute $B$ prefix sums in parallel to calculate the sums of the columns this takes $\frac dB \log P$ IOs. Then we compute the prefix sum of the column sums. Then $s_{ij}$ is just the sum of two numbers.
+
+Lastly we need to actually write the buckets down. This is nontrivial because of block alignment. It can happen that more than one processor wants to write into a block. For each processor there may be $2(d+1)$ blocks to which it only writes partially. This makes up to $2(d+1)p$ blocks into which several processors want to write. For a single block up to $P$ processors that want to write there can coordinate by $\log P$ IOs in a treelike fashion. Is there a faster way than coordinating each block sequentially?
+
+Consider a processor $\times $ block where more than one wants to write matrix. Put a cross in a cell if the processor has to start writing in the block (according to $s_{ij}$). It's irrelevant whether the processor really has anything to write there. In each row there are at most $2(d+1)$ crosses. The crosses in a column are contiguous (possibly wrapping around at the edge). In graph theory these matrices are called circular arc graphs. We want to colour the graph of the intersection of arcs. These graphs can be coloured with $2\cdot 2(d+1)$ colours greedily. We can write the blocks in $O(\log P)$ IOs ($O(\log B)$ according to paper, $O(\min \log P, \log B)$ suffices) for each colour class. In total $O(d\log P)$.
+
+Summarizing we get
+
+\[O(\frac{N}{PB} + \frac dB \log P + d\log P)\]
+
+\paragraph{Remark} If a subset of the input is divided into groups of size $s_1,s_2,\ldots , s_l$, $p_i$ processors are allotted to group $i$, with $\sum p_i = P$, and $\frac{s_i}{p_i}\leq N/P$ then we can do the $l$ partitioning problems in parallel with the above IO-bound.
+
+%that indicate where processor $i$ should start writing bucket $j$. For each fixed $j$ we compute all sums 
+%
+%\[s_i^{(j)} = \sum_{k<i} n_{kj}\]
+%
+%by parallel prefix computation. Then we do a parallel prefix computation on the numbers $s_i^{(d)}$
+
+\paragraph{Interval Graphs and Circular Arc Graphs} Let the nodes of the graph be intervals on the real line. Two intervals $I_1$, $I_2$ are connected by an edge if $I_1\cap I_2 \neq \emptyset$. Let 
+\[k= \max\{l | x\in \R, x_\in I_1\cap \ldots \cap I_l\}\]
+
+be the maximal number of intersecting intervals. This in the size of the largest clique in the graph. 
+
+\begin{lem} An interval graph can be coloured with $k$ colours.\end{lem}
+
+Circular Arc Graphs are defined similarly. Instead of intervals on the real line, we have intervals on a circle. There are edges between two arcs if they intersect.
+
+\begin{lem} A circular arc graph can be coloured with $2k$ colours.\end{lem}
+
+\begin{pr} Take an arbitrary point on the circle and colour all the arcs that contain it. Remove those arcs and consider the remaining graph as an interval graph. Colour it with fresh $k$ colours.\end{pr}

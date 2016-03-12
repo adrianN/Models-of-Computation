@@ -16,7 +16,7 @@ IOs. For splitting we choose pivots as described in section \ldots, i.e. choosin
 
 Recall the remark about partitioning $s_i$. Here we do the same to split the buckts. We allot $p_i$ processors such that
 
-\[\frac{s_i}{p_i} \lqq \frac NP, \qquad p_i = \]
+\[\frac{s_i}{p_i} \leq \frac NP, \qquad p_i = \]
 
 Then 
 
@@ -56,3 +56,4 @@ We set $d$ to be the minimum of the upper bounds. Then we get
 \begin{thm} If $P\leq \min(\frac{N}{x^2\log^2N}, \sqrt{\frac{N}{x^2B}})$, and $\log_d P = O(\ldots)$, then the complexity is 
 
 \[O(\frac{N}{PB} \log_{M/B} \frac{N}{B})\]
+\end{thm}
